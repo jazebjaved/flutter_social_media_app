@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_app/misc/global_variable.dart';
 import 'package:first_app/screen/add_post_screen.dart';
+import 'package:first_app/screen/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
@@ -16,8 +17,8 @@ class MobileScreenLayout extends StatefulWidget {
 }
 
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
-  PageController controller = PageController(initialPage: 0);
-  var selected = 0;
+  PageController controller = PageController(initialPage: 2);
+  var selected = 2;
 
   @override
   void dispose() {
@@ -34,7 +35,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
             body: PageView(controller: controller, children: [
               const NewsFeed(),
               const SearchScreen(),
-              const Text('rehab3'),
+              const ChatScreen(),
               ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
             ]),
             bottomNavigationBar: StylishBottomBar(
