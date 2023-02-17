@@ -1,6 +1,7 @@
 import 'package:first_app/resources/chatApi.dart';
 import 'package:flutter/material.dart';
 
+import '../misc/data_utils.dart';
 import '../models/message.dart';
 
 class ConversationCard extends StatelessWidget {
@@ -10,11 +11,11 @@ class ConversationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChatApi().user.uid == messages.fromId
-        ? _greenMessage()
-        : _blueMessage();
+        ? _greenMessage(context)
+        : _blueMessage(context);
   }
 
-  Widget _greenMessage() {
+  Widget _greenMessage(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -22,14 +23,17 @@ class ConversationCard extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15),
           child: Row(
             children: [
-              Icon(
-                Icons.done_all_outlined,
-                color: Colors.blue,
-              ),
+              // show icon only when read field not empty
+              if (messages.read.isNotEmpty)
+                Icon(
+                  Icons.done_all_outlined,
+                  color: Colors.blue,
+                ),
               SizedBox(
                 width: 5,
               ),
-              Text(messages.sent),
+              Text(DateUtil.getFormattedTime(
+                  context: context, time: messages.sent)),
             ],
           ),
         ),
@@ -54,7 +58,12 @@ class ConversationCard extends StatelessWidget {
     );
   }
 
-  Widget _blueMessage() {
+  Widget _blueMessage(BuildContext context) {
+    //funtion to show blue tick icon for read meesage
+    if (messages.read.isEmpty) {
+      ChatApi().updateMessageReadStatus(messages);
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -77,7 +86,8 @@ class ConversationCard extends StatelessWidget {
             )),
         Padding(
           padding: const EdgeInsets.only(right: 15),
-          child: Text(messages.sent),
+          child: Text(
+              DateUtil.getFormattedTime(context: context, time: messages.sent)),
         )
       ],
     );

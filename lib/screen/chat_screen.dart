@@ -68,7 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 )),
           ),
           _isShowUser
-              ? Center(
+              ? const Center(
                   child: Text('raja muna'),
                 )
               : StreamBuilder(

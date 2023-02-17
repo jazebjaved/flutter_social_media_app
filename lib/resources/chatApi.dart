@@ -39,4 +39,33 @@ class ChatApi {
         .collection('chat/${getConversationID(chatUser.uid)}/messages/');
     await ref.doc(time).set(message.toJson());
   }
+
+  Future<void> updateMessageReadStatus(Message message) async {
+    firestore
+        .collection('chat/${getConversationID(message.fromId)}/messages/')
+        .doc(message.sent)
+        .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
+  }
+
+  Future getUnreadMessageAmount(
+    UserModel.User chatUser,
+  ) async {
+    var query = await firestore
+        .collection('chat/${getConversationID(chatUser.uid)}/messages/')
+        .where('read', isEqualTo: '')
+        .get();
+
+    int Count = query.docs.length;
+    return Count;
+  }
+
+  //get only last message of a specific chat
+  Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
+      UserModel.User user) {
+    return firestore
+        .collection('chat/${getConversationID(user.uid)}/messages/')
+        .orderBy('sent', descending: true)
+        .limit(1)
+        .snapshots();
+  }
 }

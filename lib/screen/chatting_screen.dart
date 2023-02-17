@@ -75,7 +75,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
                           );
                         }
                     }
-                    ;
                   }),
             ),
             _chatInput(context)
