@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:badges/badges.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:first_app/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +25,7 @@ class ChattingScreen extends StatefulWidget {
 class _ChattingScreenState extends State<ChattingScreen> {
   List<Message> _list = [];
   final TextEditingController _chattingController = TextEditingController();
+  bool _showEmoji = false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -32,53 +35,93 @@ class _ChattingScreenState extends State<ChattingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          flexibleSpace: _appbar(context),
-          automaticallyImplyLeading: false,
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder(
-                  stream: ChatApi().getAllMessages(widget.user),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      //if data is loading
-                      case ConnectionState.waiting:
-                      case ConnectionState.none:
-                        return const SizedBox();
-
-                      //if some or all data is loaded then show it
-                      case ConnectionState.active:
-                      case ConnectionState.done:
-                        final data = snapshot.data?.docs;
-                        _list = data
-                                ?.map((e) => Message.fromJson(e.data()))
-                                .toList() ??
-                            [];
-
-                        if (_list.isNotEmpty) {
-                          return ListView.builder(
-                              reverse: true,
-                              itemCount: _list.length,
-                              padding: EdgeInsets.only(top: 18),
-                              physics: const BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return ConversationCard(messages: _list[index]);
-                              });
-                        } else {
-                          return const Center(
-                            child: Text('Say Hii! 👋',
-                                style: TextStyle(fontSize: 20)),
-                          );
-                        }
-                    }
-                  }),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: SafeArea(
+        child: WillPopScope(
+          onWillPop: () {
+            if (_showEmoji) {
+              setState(() {
+                _showEmoji = !_showEmoji;
+              });
+              return Future.value(false);
+            } else {
+              return Future.value(true);
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              flexibleSpace: _appbar(context),
+              automaticallyImplyLeading: false,
             ),
-            _chatInput(context)
-          ],
+            body: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder(
+                      stream: ChatApi().getAllMessages(widget.user),
+                      builder: (context, snapshot) {
+                        switch (snapshot.connectionState) {
+                          //if data is loading
+                          case ConnectionState.waiting:
+                          case ConnectionState.none:
+                            return const SizedBox();
+
+                          //if some or all data is loaded then show it
+                          case ConnectionState.active:
+                          case ConnectionState.done:
+                            final data = snapshot.data?.docs;
+                            _list = data
+                                    ?.map((e) => Message.fromJson(e.data()))
+                                    .toList() ??
+                                [];
+
+                            if (_list.isNotEmpty) {
+                              return ListView.builder(
+                                  reverse: true,
+                                  itemCount: _list.length,
+                                  padding: EdgeInsets.only(top: 18),
+                                  physics: const BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return ConversationCard(
+                                        messages: _list[index]);
+                                  });
+                            } else {
+                              return const Center(
+                                child: Text('Say Hii! 👋',
+                                    style: TextStyle(fontSize: 20)),
+                              );
+                            }
+                        }
+                      }),
+                ),
+                if (_showEmoji)
+                  SizedBox(
+                    height: 243.55,
+                    child: EmojiPicker(
+                      onBackspacePressed: () {
+                        // Do something when the user taps the backspace button (optional)
+
+                        // Set it to null to hide the Backspace-Button
+                      },
+
+                      textEditingController:
+                          _chattingController, // pass here the same [TextEditingController] that is connected to your input field, usually a [TextFormField]
+
+                      config: Config(
+                        bgColor: Colors.white,
+                        columns: 8,
+
+                        emojiSizeMax: 25 *
+                            (Platform.isAndroid
+                                ? 1.30
+                                : 1.0), // Issue: https://github.com/flutter/flutter/issues/28894
+                      ),
+                    ),
+                  ),
+                _chatInput(context)
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -115,7 +158,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
               widget.user.username,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
             ),
-            Text(
+            const Text(
               'Last User Message',
               style: TextStyle(color: Color.fromARGB(169, 0, 0, 0)),
             ),
@@ -138,7 +181,12 @@ class _ChattingScreenState extends State<ChattingScreen> {
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        FocusScope.of(context).unfocus();
+                        _showEmoji = !_showEmoji;
+                      });
+                    },
                     icon: Icon(
                       Icons.emoji_emotions_outlined,
                       color: Colors.red,
@@ -147,6 +195,12 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   ),
                   Expanded(
                       child: TextField(
+                    onTap: () {
+                      if (_showEmoji)
+                        setState(() {
+                          _showEmoji = !_showEmoji;
+                        });
+                    },
                     controller: _chattingController,
                     keyboardType: TextInputType.multiline,
                     decoration: InputDecoration(
