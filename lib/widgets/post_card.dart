@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_app/provider/comments_provider.dart';
 import 'package:first_app/resources/firestore_method.dart';
@@ -160,10 +161,20 @@ class _postCardState extends State<postCard> {
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    widget.snap['postPicUrl'],
+                  child: CachedNetworkImage(
+                    imageUrl: widget.snap['postPicUrl'],
+                    placeholder: (context, url) => const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    ),
                     fit: BoxFit.cover,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
+                  // Image.network(
+                  //   widget.snap['postPicUrl'],
+                  //   fit: BoxFit.cover,
+                  // ),
                 )
               ],
             ),

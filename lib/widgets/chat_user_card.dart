@@ -100,7 +100,9 @@ class _ChatUserCardState extends State<ChatUserCard> {
                             ),
                             Text(
                               _message != null
-                                  ? _message!.msg
+                                  ? _message!.type == Type.text
+                                      ? _message!.msg
+                                      : 'Image 🖼️ '
                                   : widget.user.bio,
                               style: TextStyle(
                                   color: Color.fromARGB(169, 0, 0, 0)),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_app/misc/utils.dart';
@@ -326,8 +327,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shrinkWrap: true,
                           itemCount: snapshot.data!.docs.length,
                           itemBuilder: (context, index) {
-                            return Image.network(
-                                snapshot.data!.docs[index]['postPicUrl']);
+                            return CachedNetworkImage(
+                              imageUrl: snapshot.data!.docs[index]
+                                  ['postPicUrl'],
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      CircularProgressIndicator(
+                                          value: downloadProgress.progress),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            );
+                            // Image.network(
+                            //     snapshot.data!.docs[index]['postPicUrl']);
                           },
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(

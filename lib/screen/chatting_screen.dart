@@ -3,11 +3,14 @@ import 'dart:io';
 
 import 'package:badges/badges.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:first_app/misc/utils.dart';
 import 'package:first_app/models/user.dart';
+import 'package:first_app/resources/storage_method.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../models/message.dart';
 import '../resources/chatApi.dart';
@@ -110,11 +113,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
                       config: Config(
                         bgColor: Colors.white,
                         columns: 8,
-
-                        emojiSizeMax: 25 *
-                            (Platform.isAndroid
-                                ? 1.30
-                                : 1.0), // Issue: https://github.com/flutter/flutter/issues/28894
+                        emojiSizeMax: 25 * (Platform.isAndroid ? 1.30 : 1.0),
                       ),
                     ),
                   ),
@@ -207,7 +206,10 @@ class _ChattingScreenState extends State<ChattingScreen> {
                         hintText: 'type something', border: InputBorder.none),
                   )),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      Uint8List file = await pickImage(ImageSource.gallery);
+                      await StorageMethods().sendChatImage(widget.user, file);
+                    },
                     icon: Icon(
                       Icons.image_outlined,
                       color: Colors.red,
@@ -215,7 +217,10 @@ class _ChattingScreenState extends State<ChattingScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      Uint8List file = await pickImage(ImageSource.camera);
+                      await StorageMethods().sendChatImage(widget.user, file);
+                    },
                     icon: Icon(
                       Icons.camera_alt_outlined,
                       color: Colors.red,
@@ -235,7 +240,8 @@ class _ChattingScreenState extends State<ChattingScreen> {
             child: MaterialButton(
               onPressed: () {
                 if (_chattingController.text.isNotEmpty) {
-                  ChatApi().sendMessage(widget.user, _chattingController.text);
+                  ChatApi().sendMessage(
+                      widget.user, _chattingController.text, Type.text);
                   _chattingController.text = "";
                 }
               },

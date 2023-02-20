@@ -22,17 +22,19 @@ class ChatApi {
       UserModel.User user) {
     return firestore
         .collection('chat/${getConversationID(user.uid)}/messages/')
+        .orderBy('sent', descending: true)
         .snapshots();
   }
 
-  Future<void> sendMessage(UserModel.User chatUser, String msg) async {
+  Future<void> sendMessage(
+      UserModel.User chatUser, String msg, Type type) async {
     final time = DateTime.now().microsecondsSinceEpoch.toString();
 
     final Message message = Message(
         toId: chatUser.uid,
         msg: msg,
         read: "",
-        type: Type.text,
+        type: type,
         fromId: user.uid,
         sent: time);
     final ref = firestore

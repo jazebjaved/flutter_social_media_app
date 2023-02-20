@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:first_app/models/message.dart';
+import 'package:first_app/resources/chatApi.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
+import '../models/user.dart' as UserModel;
 
 class StorageMethods {
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -20,5 +23,19 @@ class StorageMethods {
     TaskSnapshot snap = await uploadTask;
     String downloadUrl = await snap.ref.getDownloadURL();
     return downloadUrl;
+  }
+
+  Future<void> sendChatImage(
+    UserModel.User chatUser,
+    Uint8List file,
+  ) async {
+    Reference ref = _storage.ref().child(
+        'images/${ChatApi().getConversationID(chatUser.uid)}/${DateTime.now().millisecondsSinceEpoch}');
+
+    UploadTask uploadTask = ref.putData(file);
+
+    TaskSnapshot snap = await uploadTask;
+    String downloadUrl = await snap.ref.getDownloadURL();
+    return await ChatApi().sendMessage(chatUser, downloadUrl, Type.image);
   }
 }
