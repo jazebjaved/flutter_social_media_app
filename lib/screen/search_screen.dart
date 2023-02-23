@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
+import '../models/user.dart' as UserModel;
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -15,6 +16,8 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  List<UserModel.User> _list = [];
+
   bool _isShowUser = false;
   @override
   void dispose() {
@@ -72,22 +75,26 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         );
                       }
+                      final data = snapshot.data?.docs;
+                      _list = data
+                              ?.map((e) => UserModel.User.fromSnap(e))
+                              .toList() ??
+                          [];
 
                       return ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: snapshot.data!.docs.length,
+                          itemCount: _list.length,
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () => Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => ProfileScreen(
-                                    uid: snapshot.data!.docs[index]['uid'],
+                                    uid: _list[index].uid,
                                   ),
                                 ),
                               ),
-                              child: AddFriendCard(
-                                  snap: snapshot.data!.docs[index]),
+                              child: AddFriendCard(snap: _list[index]),
                             );
                           });
                     } else {

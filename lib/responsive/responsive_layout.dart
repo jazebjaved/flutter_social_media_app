@@ -1,3 +1,4 @@
+import 'package:first_app/provider/comments_provider.dart';
 import 'package:first_app/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,12 +24,10 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     // TODO: implement initState
     super.initState();
     addData();
+    Provider.of<UserProvider>(context, listen: false).refreshUser();
   }
 
-  addData() async {
-    UserProvider _userProvider = Provider.of(context, listen: false);
-    await _userProvider.refreshUser();
-  }
+  addData() async {}
 
   @override
   Widget build(BuildContext context) {

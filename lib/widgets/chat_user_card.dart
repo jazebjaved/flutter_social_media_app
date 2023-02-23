@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import '../misc/data_utils.dart';
 import '../models/message.dart';
@@ -75,14 +74,9 @@ class _ChatUserCardState extends State<ChatUserCard> {
                     ),
                     child: Row(
                       children: [
-                        Badge(
-                          position: BadgePosition.bottomEnd(bottom: 5, end: 0),
-                          badgeStyle: BadgeStyle(
-                              badgeColor: Colors.green, elevation: 2),
-                          child: CircleAvatar(
-                            radius: 25,
-                            backgroundImage: NetworkImage(widget.user.photoUrl),
-                          ),
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundImage: NetworkImage(widget.user.photoUrl),
                         ),
                         const SizedBox(
                           width: 12,

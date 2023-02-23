@@ -70,4 +70,8 @@ class ChatApi {
         .limit(1)
         .snapshots();
   }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> updateFollowers(user) {
+    return firestore.collection('user').doc(user).snapshots();
+  }
 }

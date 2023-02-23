@@ -12,8 +12,9 @@ import './responsive/mobile_screen_layout.dart';
 import './responsive/web_screen_layout.dart';
 import './screen/login_screen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   if (kIsWeb) {
     await Firebase.initializeApp(
       options: const FirebaseOptions(
@@ -26,6 +27,7 @@ void main() async {
     runApp(const MyApp());
   } else {
     await Firebase.initializeApp();
+
     runApp(const MyApp());
   }
 }

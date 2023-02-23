@@ -34,7 +34,7 @@ class AuthMethods {
         String photoUrl = await StorageMethods()
             .uploadImageToStorage('profilepics', file, false);
 
-        UserModel.User user = UserModel.User(
+        final UserModel.User user = UserModel.User(
           username: username,
           uid: cred.user!.uid,
           email: email,
@@ -75,5 +75,43 @@ class AuthMethods {
 
   Future<void> LogOutUser() async {
     return await _auth.signOut();
+  }
+
+  Future<String> updateProfile({
+    required String uid,
+    required String email,
+    required String username,
+    required String bio,
+    required Uint8List? file,
+  }) async {
+    String res = 'some error occure';
+
+    try {
+      if (file != null) {
+        String photoUrl = await StorageMethods()
+            .uploadImageToStorage('profilepics', file, false);
+
+        await _firestore.collection('user').doc(uid).update({
+          'username': username,
+          'uid': uid,
+          'email': email,
+          'bio': bio,
+          'photoUrl': photoUrl,
+        });
+        res = 'success';
+      } else {
+        await _firestore.collection('user').doc(uid).update({
+          'username': username,
+          'uid': uid,
+          'email': email,
+          'bio': bio,
+        });
+        res = 'success';
+      }
+    } catch (err) {
+      res = err.toString();
+      print(err.toString());
+    }
+    return res;
   }
 }

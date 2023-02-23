@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class CommentsProvider with ChangeNotifier {
   int? _commenLength;
-  int? get getComment => _commenLength;
+  int get getComment => _commenLength!;
 
   Future refreshComments(String postId) async {
     QuerySnapshot snap = await FirebaseFirestore.instance
@@ -15,5 +15,6 @@ class CommentsProvider with ChangeNotifier {
         .get();
     int commenLength = snap.docs.length;
     _commenLength = commenLength;
+    notifyListeners();
   }
 }

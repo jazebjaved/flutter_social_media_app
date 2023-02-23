@@ -120,6 +120,7 @@ class ConversationCard extends StatelessWidget {
                       placeholder: (context, url) =>
                           const CircularProgressIndicator(),
                       fit: BoxFit.cover,
+                      height: 270,
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                     ),

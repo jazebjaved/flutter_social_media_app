@@ -35,7 +35,7 @@ class FirestoreMethods {
           likes: [],
         );
 
-        await _firestore.collection('post').doc(postId).set(post.toKson());
+        await _firestore.collection('post').doc(postId).set(post.toJson());
         res = 'success';
       }
     } catch (err) {

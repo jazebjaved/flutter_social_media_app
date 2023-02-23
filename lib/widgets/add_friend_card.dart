@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import '../models/user.dart' as UserModel;
 
 class AddFriendCard extends StatelessWidget {
-  final snap;
-  const AddFriendCard({super.key, this.snap});
+  final UserModel.User snap;
+  const AddFriendCard({super.key, required this.snap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class AddFriendCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 24,
-                  backgroundImage: NetworkImage(snap['photoUrl']),
+                  backgroundImage: NetworkImage(snap.photoUrl),
                 ),
                 const SizedBox(
                   width: 15,
@@ -29,7 +30,7 @@ class AddFriendCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      snap['username'],
+                      snap.username,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
@@ -37,7 +38,7 @@ class AddFriendCard extends StatelessWidget {
                       height: 2,
                     ),
                     Text(
-                      '12 mutual friends',
+                      snap.bio,
                       style:
                           TextStyle(color: Color.fromARGB(255, 123, 121, 121)),
                     ),

@@ -20,7 +20,7 @@ class Post {
     required this.likes,
   });
 
-  Map<String, dynamic> toKson() => {
+  Map<String, dynamic> toJson() => {
         'description': description,
         'username': username,
         'uid': uid,
@@ -30,4 +30,18 @@ class Post {
         'photoUrl': photoUrl,
         'likes': likes,
       };
+
+  static Post fromJson(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+    return Post(
+      description: snapshot['description'],
+      username: snapshot['username'],
+      uid: snapshot['uid'],
+      postId: snapshot['postId'],
+      datePublished: snapshot['datePublished'],
+      postPicUrl: snapshot['postPicUrl'],
+      photoUrl: snapshot['photoUrl'],
+      likes: snapshot['likes'],
+    );
+  }
 }

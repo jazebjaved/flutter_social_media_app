@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:badges/badges.dart';
 import 'package:first_app/resources/chatApi.dart';
 import 'package:first_app/widgets/chat_user_card.dart';
 import 'package:flutter/material.dart';

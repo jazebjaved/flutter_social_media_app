@@ -49,8 +49,8 @@ class commentCard extends StatelessWidget {
     return Column(children: [
       Card(
         margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
-        elevation: 10,
-        shadowColor: const Color(0xFFEE0F38),
+        elevation: 3,
+        shadowColor: Color.fromARGB(255, 255, 254, 254),
         child: Container(
           padding: const EdgeInsets.only(
             left: 25,

@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:badges/badges.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:first_app/misc/utils.dart';
 import 'package:first_app/models/user.dart';
@@ -138,13 +137,9 @@ class _ChattingScreenState extends State<ChattingScreen> {
             color: Colors.white,
           ),
         ),
-        Badge(
-          position: BadgePosition.bottomEnd(bottom: 5, end: 0),
-          badgeStyle: BadgeStyle(badgeColor: Colors.green, elevation: 2),
-          child: CircleAvatar(
-            radius: 22,
-            backgroundImage: NetworkImage(widget.user.photoUrl),
-          ),
+        CircleAvatar(
+          radius: 22,
+          backgroundImage: NetworkImage(widget.user.photoUrl),
         ),
         const SizedBox(
           width: 12,
@@ -157,8 +152,8 @@ class _ChattingScreenState extends State<ChattingScreen> {
               widget.user.username,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
             ),
-            const Text(
-              'Last User Message',
+            Text(
+              widget.user.bio,
               style: TextStyle(color: Color.fromARGB(169, 0, 0, 0)),
             ),
           ],

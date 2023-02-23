@@ -103,7 +103,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel.User user = Provider.of<UserProvider>(context).getUser;
+    UserModel.User? user = Provider.of<UserProvider>(context).getUser;
     return Row(
       children: [
         Expanded(
@@ -212,7 +212,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             onPressed: _file == null
                                 ? null
                                 : () => creatPost(
-                                      user.uid,
+                                      user!.uid,
                                       user.username,
                                       user.photoUrl,
                                     ),

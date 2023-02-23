@@ -9,14 +9,17 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../models/user.dart' as UserModel;
 
 import '../misc/utils.dart';
+import '../models/post.dart';
+import '../screen/profile_screen.dart';
 
 class postCard extends StatefulWidget {
-  final snap;
-  final user;
+  final Post snap;
+  final String user;
 
-  const postCard({super.key, required this.snap, this.user});
+  const postCard({super.key, required this.snap, required this.user});
 
   @override
   State<postCard> createState() => _postCardState();
@@ -40,15 +43,17 @@ class _postCardState extends State<postCard> {
       //for post lenghth
       var postSnap = await FirebaseFirestore.instance
           .collection('post')
-          .doc(widget.snap['postId'])
+          .doc(widget.snap.postId)
           .collection('comments')
           .get();
 
       postLen = postSnap.docs.length;
 
-      setState(() {});
+      setState(() {
+        postLen = postSnap.docs.length;
+      });
     } catch (e) {
-      ShowSnackBar(e.toString(), context);
+      e.toString();
     }
     setState(() {
       isloading = false;
@@ -71,8 +76,8 @@ class _postCardState extends State<postCard> {
                   ),
                 ),
                 onPressed: () async {
-                  await FirestoreMethods().deletePost(
-                      widget.snap['uid'], widget.snap['postId'], context);
+                  await FirestoreMethods()
+                      .deletePost(widget.snap.uid, widget.snap.postId, context);
                   Navigator.of(context).pop();
                 },
               ),
@@ -108,31 +113,46 @@ class _postCardState extends State<postCard> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundImage: NetworkImage(
-                    widget.snap['photoUrl'],
+                InkWell(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ProfileScreen(
+                        uid: widget.snap.uid,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.snap['username'],
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      DateFormat.yMMMd()
-                          .format(widget.snap['datePublished'].toDate()),
-                    ),
-                  ],
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 24,
+                        backgroundImage: NetworkImage(
+                          widget.snap.photoUrl,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.snap.username,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            DateFormat.yMMMd()
+                                .format(widget.snap.datePublished.toDate()),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 const Spacer(),
                 CircleAvatar(
@@ -155,14 +175,14 @@ class _postCardState extends State<postCard> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.snap['description']),
+                Text(widget.snap.description),
                 const SizedBox(
                   height: 10,
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: CachedNetworkImage(
-                    imageUrl: widget.snap['postPicUrl'],
+                    imageUrl: widget.snap.postPicUrl,
                     placeholder: (context, url) => const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: CircularProgressIndicator(),
@@ -188,10 +208,10 @@ class _postCardState extends State<postCard> {
                   children: [
                     IconButton(
                       onPressed: () async {
-                        await FirestoreMethods().likePost(widget.snap['postId'],
-                            widget.user.uid, widget.snap['likes']);
+                        await FirestoreMethods().likePost(
+                            widget.snap.postId, widget.user, widget.snap.likes);
                       },
-                      icon: widget.snap['likes'].contains(widget.user.uid)
+                      icon: widget.snap.likes.contains(widget.user)
                           ? const Icon(
                               Icons.favorite,
                               color: Color(0xFFEE0F38),
@@ -200,7 +220,7 @@ class _postCardState extends State<postCard> {
                               Icons.favorite_outline,
                             ),
                     ),
-                    Text('${widget.snap['likes'].length.toString()} Likes')
+                    Text('${widget.snap.likes.length.toString()} Likes')
                   ],
                 ),
                 Row(
