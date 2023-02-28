@@ -12,6 +12,7 @@ import 'package:first_app/widgets/post_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart' as UserModel;
 import '../resources/chatApi.dart';
@@ -89,6 +90,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Widget PersonalDetailCard(
+      Icon icon,
+      String title,
+      String subtitle,
+    ) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 0),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 27,
+              backgroundColor: const Color.fromARGB(162, 217, 212, 212),
+              child: icon,
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            Text(title),
+            const SizedBox(
+              height: 2,
+            ),
+            Text(
+              subtitle,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+      );
+    }
+
     // final user = Provider.of<UserProvider>(context).getUser;
     return isloading
         ? const Scaffold(
@@ -115,303 +146,378 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
               ],
             ),
-            body: StreamBuilder(
-                stream: ChatApi().updateFollowers(widget.uid),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+            body: SingleChildScrollView(
+              child: StreamBuilder(
+                  stream: ChatApi().updateFollowers(widget.uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
 
-                  final data = snapshot.data;
-                  _userList = UserModel.User.fromSnap(data!);
-                  followers = _userList.followers.length;
-                  following = _userList.following.length;
-                  isfollowing = _userList.followers
-                      .contains(FirebaseAuth.instance.currentUser!.uid);
+                    final data = snapshot.data;
+                    _userList = UserModel.User.fromSnap(data!);
+                    followers = _userList.followers.length;
+                    following = _userList.following.length;
+                    isfollowing = _userList.followers
+                        .contains(FirebaseAuth.instance.currentUser!.uid);
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 35),
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 35,
-                        ),
-                        Center(
-                          child: CircleAvatar(
-                            radius: 54,
-                            backgroundColor: Colors.red,
-                            child: CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                _userList.photoUrl,
-                              ),
-                            ),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 35,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Center(
-                          child: Text(
-                            _userList.username,
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Center(
-                          child: Text(
-                            _userList.bio,
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Color.fromARGB(255, 82, 79, 79)),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: 73,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      postLen.toString(),
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w800),
-                                    ),
-                                    Text(
-                                      'Posts',
-                                      style: TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 121, 118, 118)),
-                                    )
-                                  ],
+                          Card(
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 20,
                                 ),
-                              ),
-                              SizedBox(
-                                width: 73,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      following.toString(),
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w800),
+                                Center(
+                                  child: CircleAvatar(
+                                    radius: 54,
+                                    backgroundColor: Colors.red,
+                                    child: CircleAvatar(
+                                      radius: 50,
+                                      backgroundImage: NetworkImage(
+                                        _userList.photoUrl,
+                                      ),
                                     ),
-                                    Text(
-                                      'Followings',
-                                      style: TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 121, 118, 118)),
-                                    )
-                                  ],
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 73,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      followers.toString(),
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w800),
-                                    ),
-                                    Text(
-                                      'Followers',
-                                      style: TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 121, 118, 118)),
-                                    )
-                                  ],
+                                const SizedBox(
+                                  height: 15,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FirebaseAuth.instance.currentUser!.uid == widget.uid
-                                ? TextButton(
-                                    style: TextButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
-                                        backgroundColor:
-                                            const Color(0xFFEE0F38),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 48, vertical: 14)),
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  EditProfileScreen(
-                                                      user: _userList)));
-                                    },
-                                    child: const Text(
-                                      'Edit Profile',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 18),
-                                    ),
-                                  )
-                                : isfollowing
-                                    ? TextButton(
-                                        style: TextButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15)),
-                                            backgroundColor:
-                                                const Color(0xFFEE0F38),
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 48, vertical: 14)),
-                                        onPressed: () async {
-                                          await FirestoreMethods().followUser(
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid,
-                                            _userList.uid,
-                                          );
-                                          setState(() {
-                                            isfollowing = false;
-
-                                            // updateFollowers();
-                                          });
-                                        },
-                                        child: const Text(
-                                          'Unfollow',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18),
-                                        ),
-                                      )
-                                    : TextButton(
-                                        style: TextButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15)),
-                                            backgroundColor:
-                                                const Color(0xFFEE0F38),
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 48, vertical: 14)),
-                                        onPressed: () async {
-                                          await FirestoreMethods().followUser(
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid,
-                                            _userList.uid,
-                                          );
-                                          setState(() {
-                                            isfollowing = true;
-                                            // updateFollowers();
-                                          });
-                                        },
-                                        child: const Text(
-                                          'Follow',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18),
+                                Center(
+                                  child: Text(
+                                    _userList.username,
+                                    style: TextStyle(
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                Center(
+                                  child: Text(
+                                    _userList.bio,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color.fromARGB(255, 82, 79, 79)),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 73,
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              postLen.toString(),
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w800),
+                                            ),
+                                            Text(
+                                              'Posts',
+                                              style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 121, 118, 118)),
+                                            )
+                                          ],
                                         ),
                                       ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            if (FirebaseAuth.instance.currentUser!.uid !=
-                                widget.uid)
-                              CircleAvatar(
-                                backgroundColor:
-                                    const Color.fromARGB(58, 244, 67, 54),
-                                radius: 28,
-                                child: IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => ChattingScreen(
-                                                user: _userList)));
-                                  },
-                                  icon: const Icon(
-                                    Icons.chat_outlined,
-                                    color: Colors.red,
+                                      SizedBox(
+                                        width: 73,
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              following.toString(),
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w800),
+                                            ),
+                                            Text(
+                                              'Followings',
+                                              style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 121, 118, 118)),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 73,
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              followers.toString(),
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w800),
+                                            ),
+                                            Text(
+                                              'Followers',
+                                              style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 121, 118, 118)),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                          ],
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15)),
-                              backgroundColor:
-                                  const Color.fromARGB(57, 255, 255, 255),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 48, vertical: 14)),
-                          onPressed: () {},
-                          child: const Text(
-                            'Photos',
-                            style: TextStyle(color: Colors.red, fontSize: 18),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    FirebaseAuth.instance.currentUser!.uid ==
+                                            widget.uid
+                                        ? TextButton(
+                                            style: TextButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15)),
+                                                backgroundColor:
+                                                    const Color(0xFFEE0F38),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 48,
+                                                        vertical: 14)),
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          EditProfileScreen(
+                                                              user:
+                                                                  _userList)));
+                                            },
+                                            child: const Text(
+                                              'Edit Profile',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18),
+                                            ),
+                                          )
+                                        : isfollowing
+                                            ? TextButton(
+                                                style: TextButton.styleFrom(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
+                                                    backgroundColor:
+                                                        const Color(0xFFEE0F38),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 48,
+                                                        vertical: 14)),
+                                                onPressed: () async {
+                                                  await FirestoreMethods()
+                                                      .followUser(
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid,
+                                                    _userList.uid,
+                                                  );
+                                                },
+                                                child: const Text(
+                                                  'Unfollow',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18),
+                                                ),
+                                              )
+                                            : TextButton(
+                                                style: TextButton.styleFrom(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
+                                                    backgroundColor:
+                                                        const Color(0xFFEE0F38),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 48,
+                                                        vertical: 14)),
+                                                onPressed: () async {
+                                                  await FirestoreMethods()
+                                                      .followUser(
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid,
+                                                    _userList.uid,
+                                                  );
+                                                },
+                                                child: const Text(
+                                                  'Follow',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18),
+                                                ),
+                                              ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    if (FirebaseAuth
+                                            .instance.currentUser!.uid !=
+                                        widget.uid)
+                                      CircleAvatar(
+                                        backgroundColor: const Color.fromARGB(
+                                            58, 244, 67, 54),
+                                        radius: 28,
+                                        child: IconButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        ChattingScreen(
+                                                            user: _userList)));
+                                          },
+                                          icon: const Icon(
+                                            Icons.chat_outlined,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        FutureBuilder(
-                          future: FirebaseFirestore.instance
-                              .collection('post')
-                              .where('uid', isEqualTo: widget.uid)
-                              .get(),
-                          builder: ((context,
-                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                                  snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              if (snapshot.data!.docs.isEmpty) {
-                                return const Center(
-                                  child: Text(
-                                    'No Post yet',
-                                    style: TextStyle(color: Colors.red),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 25, horizontal: 5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  PersonalDetailCard(
+                                      const Icon(
+                                        Icons.school_outlined,
+                                        color: Colors.red,
+                                        size: 32,
+                                      ),
+                                      'Field of Study',
+                                      _userList.study),
+                                  PersonalDetailCard(
+                                    const Icon(
+                                      Icons.calendar_today,
+                                      color: Colors.red,
+                                      size: 32,
+                                    ),
+                                    'Date of Birth',
+                                    DateFormat.MMMd('en_US')
+                                        .format(DateTime.parse(_userList.dob)),
                                   ),
-                                );
-                              }
-
-                              return GridView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: snapshot.data!.docs.length,
-                                itemBuilder: (context, index) {
-                                  return CachedNetworkImage(
-                                    imageUrl: snapshot.data!.docs[index]
-                                        ['postPicUrl'],
-                                    progressIndicatorBuilder: (context, url,
-                                            downloadProgress) =>
-                                        CircularProgressIndicator(
-                                            value: downloadProgress.progress),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
+                                  PersonalDetailCard(
+                                      const Icon(
+                                        Icons.play_circle_outline,
+                                        color: Colors.red,
+                                        size: 32,
+                                      ),
+                                      'Hobby',
+                                      _userList.hobby),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                backgroundColor:
+                                    const Color.fromARGB(57, 255, 255, 255),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 48, vertical: 14)),
+                            onPressed: () {},
+                            child: const Text(
+                              'Photos',
+                              style: TextStyle(color: Colors.red, fontSize: 18),
+                            ),
+                          ),
+                          FutureBuilder(
+                            future: FirebaseFirestore.instance
+                                .collection('post')
+                                .where('uid', isEqualTo: widget.uid)
+                                .get(),
+                            builder: ((context,
+                                AsyncSnapshot<
+                                        QuerySnapshot<Map<String, dynamic>>>
+                                    snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (snapshot.data!.docs.isEmpty) {
+                                  return const Center(
+                                    child: Text(
+                                      'No Post yet',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
                                   );
-                                  // Image.network(
-                                  //     snapshot.data!.docs[index]['postPicUrl']);
-                                },
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2),
-                              );
-                            } else {
-                              //if the process is not finished then show the indicator process
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                          }),
-                        )
-                      ],
-                    ),
-                  );
-                }),
+                                }
+
+                                return GridView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    return CachedNetworkImage(
+                                      imageUrl: snapshot.data!.docs[index]
+                                          ['postPicUrl'],
+                                      progressIndicatorBuilder: (context, url,
+                                              downloadProgress) =>
+                                          CircularProgressIndicator(
+                                              value: downloadProgress.progress),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    );
+                                    // Image.network(
+                                    //     snapshot.data!.docs[index]['postPicUrl']);
+                                  },
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2),
+                                );
+                              } else {
+                                //if the process is not finished then show the indicator process
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                            }),
+                          )
+                        ],
+                      ),
+                    );
+                  }),
+            ),
           );
   }
 }

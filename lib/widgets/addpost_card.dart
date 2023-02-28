@@ -2,8 +2,11 @@ import 'package:first_app/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/user_provider.dart';
 import '../screen/add_post_screen.dart';
+import '../models/user.dart' as UserModel;
 
 class addPostCard extends StatelessWidget {
   const addPostCard({
@@ -12,6 +15,11 @@ class addPostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserModel.User? user = Provider.of<UserProvider>(
+      context,
+    ).getUser;
+    String? url = user?.photoUrl;
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
@@ -22,18 +30,17 @@ class addPostCard extends StatelessWidget {
         child: Column(
           children: [
             Row(
-              children: const [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: AssetImage(
-                    "assets/images/klaus.jpg",
-                  ),
-                ),
-                SizedBox(
+              children: [
+                url == null
+                    ? const SizedBox
+                        .shrink() // If it's missing, display an empty box
+                    : CircleAvatar(
+                        radius: 22, backgroundImage: NetworkImage(url)),
+                const SizedBox(
                   width: 8,
                 ),
                 Text(
-                  "what's on your mind, user name? ",
+                  "what's on your mind, ${user?.username}? ",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ],

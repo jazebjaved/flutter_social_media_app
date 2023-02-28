@@ -8,6 +8,9 @@ class User {
   late final List followers;
   late final List following;
   late final String photoUrl;
+  late final dob;
+  late final String hobby;
+  late final String study;
   User({
     required this.username,
     required this.uid,
@@ -16,6 +19,9 @@ class User {
     required this.followers,
     required this.following,
     required this.photoUrl,
+    required this.dob,
+    required this.hobby,
+    required this.study,
   });
 
   Map<String, dynamic> toKson() => {
@@ -26,18 +32,23 @@ class User {
         'followers': [],
         'following': [],
         'photoUrl': photoUrl,
+        'dob': dob,
+        'hobby': hobby,
+        'study': study,
       };
 
   static User fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
     return User(
-      username: snapshot['username'],
-      uid: snapshot['uid'],
-      email: snapshot['email'],
-      bio: snapshot['bio'],
-      followers: snapshot['followers'],
-      following: snapshot['following'],
-      photoUrl: snapshot['photoUrl'],
-    );
+        username: snapshot['username'],
+        uid: snapshot['uid'],
+        email: snapshot['email'],
+        bio: snapshot['bio'],
+        followers: snapshot['followers'],
+        following: snapshot['following'],
+        photoUrl: snapshot['photoUrl'],
+        dob: snapshot['dob'],
+        hobby: snapshot['hobby'],
+        study: snapshot['study']);
   }
 }

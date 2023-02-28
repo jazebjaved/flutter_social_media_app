@@ -18,8 +18,10 @@ class NewsFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<UserProvider>(context).getUser;
     List<Post> _list = [];
+    UserModel.User? user = Provider.of<UserProvider>(
+      context,
+    ).getUser;
 
     return Scaffold(
         appBar: AppBar(
@@ -28,7 +30,7 @@ class NewsFeed extends StatelessWidget {
             icon: const Icon(Icons.menu_outlined),
             onPressed: () {},
           ),
-          title: Text('Hi, ${currentUser.username} 😍'),
+          title: Text('Hi, ${user?.username} 😍'),
           actions: [
             IconButton(
               icon: const Icon(Icons.notification_important_outlined),

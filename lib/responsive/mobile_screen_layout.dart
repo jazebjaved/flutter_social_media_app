@@ -39,10 +39,17 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
 
   @override
   Widget build(BuildContext context) {
+    UserModel.User? user = Provider.of<UserProvider>(
+      context,
+    ).getUser;
+    String? url = user?.photoUrl;
+
     return Row(
       children: [
         Expanded(
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
+
             body: PageView(controller: controller, children: [
               const NewsFeed(),
               const SearchScreen(),
@@ -67,14 +74,18 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
                 BottomBarItem(
                   selectedColor: const Color(0xFFEE0F38),
                   icon: const Icon(
-                    Icons.notification_important_outlined,
+                    Icons.chat_outlined,
                   ),
-                  title: const Text('Cabin jj kk'),
+                  title: const Text('Chats'),
                 ),
                 BottomBarItem(
                   selectedColor: const Color(0xFFEE0F38),
-                  icon: const Icon(Icons.person_outline),
-                  title: const Text('Cabin'),
+                  icon: url == null
+                      ? const SizedBox
+                          .shrink() // If it's missing, display an empty box
+                      : CircleAvatar(
+                          radius: 16, backgroundImage: NetworkImage(url)),
+                  title: const Text('My Profile'),
                 ),
               ],
               elevation: 50,
@@ -83,7 +94,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
               currentIndex: selected,
               onTap: (index) {
                 setState(() {
-                  selected = index!;
+                  selected = index;
                   controller.jumpToPage(index);
                 });
               },

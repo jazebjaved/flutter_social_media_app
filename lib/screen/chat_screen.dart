@@ -28,7 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: const Text('Find Friends')),
+      appBar: AppBar(title: const Text('All Chats')),
       floatingActionButton: FloatingActionButton(
         heroTag: Text("btn1"),
         backgroundColor: const Color(0xFFEE0F38),
@@ -57,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 decoration: const InputDecoration(
                   filled: true, //<-- SEE HERE
                   fillColor: Color.fromARGB(213, 243, 236, 236),
-                  labelText: 'Search Friends',
+                  labelText: 'Search Chats',
                   prefixIcon: Icon(Icons.emoji_people_outlined),
 
                   enabledBorder: OutlineInputBorder(

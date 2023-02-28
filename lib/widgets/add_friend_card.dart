@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/user.dart' as UserModel;
+import '../screen/profile_screen.dart';
 
 class AddFriendCard extends StatelessWidget {
   final UserModel.User snap;
@@ -31,10 +32,10 @@ class AddFriendCard extends StatelessWidget {
                   children: [
                     Text(
                       snap.username,
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 2,
                     ),
                     Text(
@@ -45,15 +46,17 @@ class AddFriendCard extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                CircleAvatar(
-                  backgroundColor: Color.fromARGB(65, 158, 158, 158),
-                  radius: 20,
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.people_outline_sharp,
-                      color: const Color(0xFFEE0F38),
+                TextButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ProfileScreen(
+                        uid: snap.uid,
+                      ),
                     ),
+                  ),
+                  child: const Text(
+                    'View Profile',
+                    style: TextStyle(color: Color(0xFFEE0F38)),
                   ),
                 ),
               ],

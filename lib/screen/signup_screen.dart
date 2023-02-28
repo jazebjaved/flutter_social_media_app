@@ -4,6 +4,7 @@ import 'package:first_app/widgets/text_field_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../misc/utils.dart';
 import '../responsive/mobile_screen_layout.dart';
@@ -22,6 +23,10 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _hobbyController = TextEditingController();
+  final TextEditingController _studyController = TextEditingController();
+  TextEditingController dateinput = TextEditingController();
+
   Uint8List? _image;
   bool isLoading = false;
   @override
@@ -32,6 +37,9 @@ class _SignUpState extends State<SignUp> {
     _passwordController.dispose();
     _usernameController.dispose();
     _bioController.dispose();
+    dateinput.dispose();
+    _hobbyController.dispose();
+    _studyController.dispose();
   }
 
   void selectImage() async {
@@ -51,6 +59,9 @@ class _SignUpState extends State<SignUp> {
       username: _usernameController.text,
       bio: _bioController.text,
       file: _image!,
+      dob: dateinput.text,
+      hobby: _hobbyController.text,
+      study: _studyController.text,
     );
 
     if (res != 'success') {
@@ -86,18 +97,16 @@ class _SignUpState extends State<SignUp> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Image.asset(
-                        "assets/images/registration.jpg",
-                        width: double.infinity,
-                        height: 280,
-                      ),
+                      // Image.asset(
+                      //   "assets/images/registration2.jpg",
+                      //   width: double.infinity,
+                      // ),
+
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 35),
-                        child: Column(
+                        child: Wrap(
+                          runSpacing: 15,
                           children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
                             // const Align(
                             //   alignment: Alignment.topLeft,
                             //   child: Text(
@@ -109,69 +118,122 @@ class _SignUpState extends State<SignUp> {
                             //         color: Color.fromARGB(213, 45, 44, 44)),
                             //   ),
                             // ),
-                            Stack(
-                              children: [
-                                _image != null
-                                    ? CircleAvatar(
-                                        radius: 50,
-                                        backgroundImage: MemoryImage(_image!),
-                                      )
-                                    : const CircleAvatar(
-                                        radius: 50,
-                                        backgroundImage: NetworkImage(
-                                            'https://img.freepik.com/free-photo/expressive-redhead-bearded-man-with-hat_176420-32268.jpg?w=900&t=st=1674335508~exp=1674336108~hmac=7096c14c90da07b8eab01c4761c68488118f7830bf777129e81aef0a96e37966'),
+                            Center(
+                              child: Stack(
+                                children: [
+                                  _image != null
+                                      ? CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage: MemoryImage(_image!),
+                                        )
+                                      : const CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage: AssetImage(
+                                              'assets/images/profile_avatar.png'),
+                                        ),
+                                  Positioned(
+                                    bottom: -12,
+                                    right: 10,
+                                    child: IconButton(
+                                      onPressed: selectImage,
+                                      icon: const Icon(
+                                        Icons.add_a_photo_outlined,
+                                        color: Colors.red,
                                       ),
-                                Positioned(
-                                  bottom: -12,
-                                  right: 10,
-                                  child: IconButton(
-                                    onPressed: selectImage,
-                                    icon: const Icon(
-                                      Icons.add_a_photo_outlined,
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
+
                             TextFieldInput(
                               textEditingController: _emailController,
                               textInputType: TextInputType.emailAddress,
                               hintText: 'Email ID',
                               iconType: Icon(Icons.email_outlined),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+
                             TextFieldInput(
                               textEditingController: _usernameController,
                               textInputType: TextInputType.text,
                               hintText: 'Username',
-                              iconType: Icon(Icons.verified_user_outlined),
+                              iconType: const Icon(
+                                Icons.verified_user_outlined,
+                                color: Colors.red,
+                              ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+
                             TextFieldInput(
                               textEditingController: _passwordController,
                               textInputType: TextInputType.text,
                               hintText: 'Password',
                               isPass: true,
-                              iconType: const Icon(Icons.lock_outline),
+                              iconType: const Icon(
+                                Icons.lock_outline,
+                              ),
                             ),
-                            const SizedBox(
-                              height: 10,
+
+                            TextField(
+                              controller:
+                                  dateinput, //editing controller of this TextField
+                              decoration: InputDecoration(
+                                  icon: Icon(Icons
+                                      .calendar_today), //icon of text field
+                                  labelText:
+                                      "Date of Birth" //label text of field
+                                  ),
+                              readOnly:
+                                  true, //set it true, so that user will not able to edit text
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(
+                                        1950), //DateTime.now() - not to allow to choose before today.
+                                    lastDate: DateTime(2101));
+
+                                if (pickedDate != null) {
+                                  print(
+                                      pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                                  String formattedDate =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+                                  print(
+                                      formattedDate); //formatted date output using intl package =>  2021-03-16
+                                  //you can implement different kind of Date Format here according to your requirement
+
+                                  setState(() {
+                                    dateinput.text =
+                                        formattedDate; //set output date to TextField value.
+                                  });
+                                } else {
+                                  print("Date is not selected");
+                                }
+                              },
                             ),
+
                             TextFieldInput(
                               textEditingController: _bioController,
                               textInputType: TextInputType.multiline,
                               hintText: 'Bio',
                               iconType: Icon(Icons.content_copy),
                             ),
+                            TextFieldInput(
+                              textEditingController: _hobbyController,
+                              textInputType: TextInputType.text,
+                              hintText: 'Hobbies, e.g  book reading etc. ',
+                              iconType: const Icon(Icons.content_copy),
+                            ),
+
+                            TextFieldInput(
+                              textEditingController: _studyController,
+                              textInputType: TextInputType.text,
+                              hintText:
+                                  'Field of Study, e.g  Biology, IT etc. ',
+                              iconType: const Icon(Icons.read_more_outlined),
+                            ),
                             const SizedBox(
-                              height: 25,
+                              height: 60,
                             ),
                             Container(
                               width: double.infinity,
@@ -201,9 +263,7 @@ class _SignUpState extends State<SignUp> {
                                       ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 18,
-                            ),
+
                             Center(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

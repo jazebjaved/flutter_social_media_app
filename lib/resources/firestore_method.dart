@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import '../models/post.dart';
+import '../models/user.dart' as UserModel;
 
 class FirestoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -148,4 +149,41 @@ class FirestoreMethods {
       print(e.toString());
     }
   }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> friendSuggestion(
+      UserModel.User? user) {
+    return _firestore
+        .collection('user')
+        .where('study', isEqualTo: user?.study)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> friendSuggestion2(
+      UserModel.User? user) {
+    return _firestore
+        .collection('user')
+        .where('uid', isNotEqualTo: user?.uid)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> friendSuggestion3(
+      UserModel.User? user) {
+    return _firestore.collection('user').where('following', arrayContains: [
+      user?.uid,
+    ]).snapshots();
+  }
+
+  // Stream<QuerySnapshot<Map<String, dynamic>>> getOnlyFollwersPost(
+  //     UserModel.User? user) {
+  //   Stream<QuerySnapshot<Map<String, dynamic>>> isFollowing = FirebaseFirestore
+  //       .instance
+  //       .collection('user')
+  //       .where('followers', arrayContains: [user?y.uid]).snapshots();
+
+  //   return FirebaseFirestore.instance
+  //       .collection('post')
+  //       .where('uid', isEqualTo: user?.uid)
+  //       .orderBy('datePublished', descending: true)
+  //       .snapshots();
+  // }
 }

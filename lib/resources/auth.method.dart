@@ -15,18 +15,25 @@ class AuthMethods {
     return UserModel.User.fromSnap(snap);
   }
 
-  Future<String> signupUser(
-      {required String email,
-      required String password,
-      required String username,
-      required String bio,
-      required Uint8List file}) async {
+  Future<String> signupUser({
+    required String email,
+    required String password,
+    required String username,
+    required String bio,
+    required Uint8List file,
+    required String dob,
+    required String hobby,
+    required String study,
+  }) async {
     String res = 'some error occure';
     try {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
           username.isNotEmpty ||
-          bio.isNotEmpty) {
+          bio.isNotEmpty ||
+          dob.isNotEmpty ||
+          hobby.isNotEmpty ||
+          study.isNotEmpty) {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
         print(cred.user!.uid);
@@ -42,6 +49,9 @@ class AuthMethods {
           followers: [],
           following: [],
           photoUrl: photoUrl,
+          dob: dob,
+          hobby: hobby,
+          study: study,
         );
 
         await _firestore

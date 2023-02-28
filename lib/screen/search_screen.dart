@@ -6,6 +6,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart' as UserModel;
+import '../provider/user_provider.dart';
+import '../widgets/friend_suggestion.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -19,6 +21,11 @@ class _SearchScreenState extends State<SearchScreen> {
   List<UserModel.User> _list = [];
 
   bool _isShowUser = false;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -103,7 +110,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     }
                   }),
                 )
-              : const Text('post'),
+              : const FriendSuggestion(),
         ]),
       ),
     );
