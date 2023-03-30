@@ -120,7 +120,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
 
-    // final user = Provider.of<UserProvider>(context).getUser;
+    final currentUser =
+        Provider.of<UserProvider>(context, listen: false).getUser;
     return isloading
         ? const Scaffold(
             body: Center(
@@ -331,9 +332,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 onPressed: () async {
                                                   await FirestoreMethods()
                                                       .followUser(
-                                                    FirebaseAuth.instance
-                                                        .currentUser!.uid,
                                                     _userList.uid,
+                                                    currentUser!,
+                                                    'follow',
                                                   );
                                                 },
                                                 child: const Text(
@@ -360,9 +361,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 onPressed: () async {
                                                   await FirestoreMethods()
                                                       .followUser(
-                                                    FirebaseAuth.instance
-                                                        .currentUser!.uid,
                                                     _userList.uid,
+                                                    currentUser!,
+                                                    'follow',
                                                   );
                                                 },
                                                 child: const Text(
@@ -465,14 +466,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           FutureBuilder(
-                            future: FirebaseFirestore.instance
-                                .collection('post')
-                                .where('uid', isEqualTo: widget.uid)
-                                .get(),
-                            builder: ((context,
-                                AsyncSnapshot<
-                                        QuerySnapshot<Map<String, dynamic>>>
-                                    snapshot) {
+                            future:
+                                FirestoreMethods().currentUserPost(widget.uid),
+                            builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
                                 if (snapshot.data!.docs.isEmpty) {
@@ -511,7 +507,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 return const Center(
                                     child: CircularProgressIndicator());
                               }
-                            }),
+                            },
                           )
                         ],
                       ),

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:first_app/models/user.dart';
+import 'package:first_app/screen/notification_feed_screen.dart';
 import 'package:first_app/resources/auth.method.dart';
 import 'package:flutter/material.dart';
 

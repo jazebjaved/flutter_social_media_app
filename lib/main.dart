@@ -1,12 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:first_app/provider/comments_provider.dart';
+import 'package:first_app/provider/notification_feed_provider.dart';
 import 'package:first_app/provider/user_provider.dart';
 import 'package:first_app/responsive/responsive_layout.dart';
 import 'package:first_app/screen/add_post_screen.dart';
 import 'package:first_app/screen/signup_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
+import 'package:flutter_notification_channel/notification_visibility.dart';
 import 'package:provider/provider.dart';
 import './responsive/mobile_screen_layout.dart';
 import './responsive/web_screen_layout.dart';
@@ -27,6 +31,18 @@ Future<void> main() async {
     runApp(const MyApp());
   } else {
     await Firebase.initializeApp();
+    var result = await FlutterNotificationChannel.registerNotificationChannel(
+      description: 'For showing messages',
+      id: 'social_app',
+      importance: NotificationImportance.IMPORTANCE_HIGH,
+      name: 'Social Media App',
+      visibility: NotificationVisibility.VISIBILITY_PUBLIC,
+      allowBubbles: true,
+      enableVibration: true,
+      enableSound: true,
+      showBadge: true,
+    );
+    print(result);
 
     runApp(const MyApp());
   }
@@ -45,7 +61,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => CommentsProvider(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (_) => NotifyFeedCountProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'Social Media App',

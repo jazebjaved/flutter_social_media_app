@@ -67,6 +67,7 @@ class _commentsScreenState extends State<commentsScreen> {
                     itemCount: snapshots.data!.docs.length,
                     itemBuilder: ((context, index) => commentCard(
                           snap: snapshots.data!.docs[index].data(),
+                          postOwnerId: widget.snap.uid,
                         )),
                   );
                 },
@@ -111,12 +112,9 @@ class _commentsScreenState extends State<commentsScreen> {
                     radius: 24,
                     child: MaterialButton(
                       onPressed: () async {
-                        await FirestoreMethods().PostComment(
-                            _user!.photoUrl,
-                            _user!.username,
-                            _user!.uid,
-                            widget.snap.postId,
-                            _commentController.text);
+                        await FirestoreMethods().PostComment(widget.snap,
+                            _user!, 'comment', _commentController.text);
+
                         setState(() {
                           _commentController.text = "";
                         });

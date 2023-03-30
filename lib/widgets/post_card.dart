@@ -13,6 +13,7 @@ import '../models/user.dart' as UserModel;
 
 import '../misc/utils.dart';
 import '../models/post.dart';
+import '../provider/user_provider.dart';
 import '../screen/profile_screen.dart';
 
 class postCard extends StatefulWidget {
@@ -55,9 +56,7 @@ class _postCardState extends State<postCard> {
     } catch (e) {
       e.toString();
     }
-    setState(() {
-      isloading = false;
-    });
+    isloading = false;
   }
 
   Future<dynamic> _DeleteConfirmation(BuildContext context) {
@@ -101,6 +100,8 @@ class _postCardState extends State<postCard> {
     // int? comments = Provider.of<CommentsProvider>(
     //   context,
     // ).getComment;
+    UserModel.User? user =
+        Provider.of<UserProvider>(context, listen: false).getUser;
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -191,10 +192,6 @@ class _postCardState extends State<postCard> {
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
                   ),
-                  // Image.network(
-                  //   widget.snap['postPicUrl'],
-                  //   fit: BoxFit.cover,
-                  // ),
                 )
               ],
             ),
@@ -209,7 +206,17 @@ class _postCardState extends State<postCard> {
                     IconButton(
                       onPressed: () async {
                         await FirestoreMethods().likePost(
-                            widget.snap.postId, widget.user, widget.snap.likes);
+                            // widget.snap.postId,
+                            // widget.user,
+                            // widget.snap.likes,
+                            // widget.snap.postPicUrl,
+                            // user!,
+                            // 'like',
+                            widget.snap,
+                            widget.user,
+                            widget.snap.likes,
+                            user!,
+                            'like');
                       },
                       icon: widget.snap.likes.contains(widget.user)
                           ? const Icon(

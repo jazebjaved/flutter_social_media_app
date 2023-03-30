@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_app/models/post.dart';
 import 'package:first_app/resources/firestore_method.dart';
+import 'package:first_app/screen/chat_screen.dart';
+import 'package:first_app/screen/notification_feed_screen.dart';
 import 'package:first_app/widgets/addpost_card.dart';
 import 'package:first_app/widgets/post_card.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:rxdart/rxdart.dart';
 import '../models/user.dart' as UserModel;
 import 'package:async/async.dart' show StreamGroup;
 
+import '../provider/notification_feed_provider.dart';
 import '../provider/user_provider.dart';
 import '../resources/chatApi.dart';
 
@@ -22,6 +25,8 @@ class NewsFeed extends StatelessWidget {
     UserModel.User? user = Provider.of<UserProvider>(
       context,
     ).getUser;
+    final notifyFeedProvider =
+        Provider.of<NotifyFeedCountProvider>(context, listen: false);
 
     Stream<List<DocumentSnapshot>> combine2Streams(
         Stream<QuerySnapshot> stream1, Stream<QuerySnapshot> stream2) {
@@ -42,8 +47,14 @@ class NewsFeed extends StatelessWidget {
           title: Text('Hi, ${user?.username} 😍'),
           actions: [
             IconButton(
-              icon: const Icon(Icons.notification_important_outlined),
-              onPressed: () {},
+              icon: const Icon(Icons.chat_outlined),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const ChatScreen(),
+                  ),
+                );
+              },
             ),
           ],
         ),

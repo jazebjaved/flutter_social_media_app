@@ -28,6 +28,7 @@ class StorageMethods {
   Future<void> sendChatImage(
     UserModel.User chatUser,
     Uint8List file,
+    UserModel.User currentUser,
   ) async {
     Reference ref = _storage.ref().child(
         'images/${ChatApi().getConversationID(chatUser.uid)}/${DateTime.now().millisecondsSinceEpoch}');
@@ -36,6 +37,7 @@ class StorageMethods {
 
     TaskSnapshot snap = await uploadTask;
     String downloadUrl = await snap.ref.getDownloadURL();
-    return await ChatApi().sendMessage(chatUser, downloadUrl, Type.image);
+    return await ChatApi()
+        .sendMessage(chatUser, downloadUrl, Type.image, currentUser);
   }
 }

@@ -26,11 +26,11 @@ class ConversationCard extends StatelessWidget {
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.75,
             ),
-            margin: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(
               horizontal: 10,
               vertical: 10,
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: Colors.red,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
@@ -42,7 +42,7 @@ class ConversationCard extends StatelessWidget {
                     padding: const EdgeInsets.all(19),
                     child: Text(
                       messages.msg,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   )
                 : Padding(

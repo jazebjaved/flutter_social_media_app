@@ -1,5 +1,6 @@
 import 'package:first_app/provider/comments_provider.dart';
 import 'package:first_app/provider/user_provider.dart';
+import 'package:first_app/resources/chatApi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,9 +22,10 @@ class ResponsiveLayout extends StatefulWidget {
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   @override
   void initState() {
-    super.initState();
-
+    ChatApi().getFirebaseMessagingToken();
     Provider.of<UserProvider>(context, listen: false).refreshUser();
+
+    super.initState();
   }
 
   @override

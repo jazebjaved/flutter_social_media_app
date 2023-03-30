@@ -3,17 +3,20 @@ import 'package:first_app/misc/global_variable.dart';
 import 'package:first_app/resources/chatApi.dart';
 import 'package:first_app/screen/add_post_screen.dart';
 import 'package:first_app/screen/chat_screen.dart';
+import 'package:first_app/screen/notification_feed_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stylish_bottom_bar/helpers/bottom_bar.dart';
 import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
+import '../provider/notification_feed_provider.dart';
 import '../provider/user_provider.dart';
 import '../screen/news_feed_screen.dart';
 import '../screen/profile_screen.dart';
 import '../screen/search_screen.dart';
 import '../models/user.dart' as UserModel;
+import 'package:badges/badges.dart' as badges;
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({super.key});
@@ -42,6 +45,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     UserModel.User? user = Provider.of<UserProvider>(
       context,
     ).getUser;
+
     String? url = user?.photoUrl;
 
     return Row(
@@ -53,7 +57,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
             body: PageView(controller: controller, children: [
               const NewsFeed(),
               const SearchScreen(),
-              const ChatScreen(),
+              const NotificationFeedScreen(),
               ProfileScreen(uid: ChatApi().user.uid),
             ]),
             bottomNavigationBar: StylishBottomBar(
@@ -73,10 +77,21 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
                 ),
                 BottomBarItem(
                   selectedColor: const Color(0xFFEE0F38),
-                  icon: const Icon(
-                    Icons.chat_outlined,
+                  icon: Consumer<NotifyFeedCountProvider>(
+                    builder: (context, count, child) {
+                      return badges.Badge(
+                        badgeStyle: badges.BadgeStyle(badgeColor: Colors.red),
+                        badgeContent: Text(
+                          count.count.toString(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        child: Icon(
+                          Icons.notifications_none_outlined,
+                        ),
+                      );
+                    },
                   ),
-                  title: const Text('Chats'),
+                  title: const Text('Feeds'),
                 ),
                 BottomBarItem(
                   selectedColor: const Color(0xFFEE0F38),

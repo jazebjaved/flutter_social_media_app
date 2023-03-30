@@ -10,8 +10,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import '../models/message.dart';
+import '../provider/user_provider.dart';
 import '../resources/chatApi.dart';
 import '../widgets/conversation_card.dart';
 import '../models/user.dart' as UserModel;
@@ -27,6 +29,7 @@ class ChattingScreen extends StatefulWidget {
 class _ChattingScreenState extends State<ChattingScreen> {
   List<Message> _list = [];
   final TextEditingController _chattingController = TextEditingController();
+
   bool _showEmoji = false;
   @override
   void dispose() {
@@ -164,6 +167,8 @@ class _ChattingScreenState extends State<ChattingScreen> {
   }
 
   Widget _chatInput(BuildContext context) {
+    final currentUser =
+        Provider.of<UserProvider>(context, listen: false).getUser;
     return Row(
       children: [
         Expanded(
@@ -203,7 +208,8 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   IconButton(
                     onPressed: () async {
                       Uint8List file = await pickImage(ImageSource.gallery);
-                      await StorageMethods().sendChatImage(widget.user, file);
+                      await StorageMethods()
+                          .sendChatImage(widget.user, file, currentUser!);
                     },
                     icon: Icon(
                       Icons.image_outlined,
@@ -214,7 +220,8 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   IconButton(
                     onPressed: () async {
                       Uint8List file = await pickImage(ImageSource.camera);
-                      await StorageMethods().sendChatImage(widget.user, file);
+                      await StorageMethods()
+                          .sendChatImage(widget.user, file, currentUser!);
                     },
                     icon: Icon(
                       Icons.camera_alt_outlined,
@@ -235,8 +242,8 @@ class _ChattingScreenState extends State<ChattingScreen> {
             child: MaterialButton(
               onPressed: () {
                 if (_chattingController.text.isNotEmpty) {
-                  ChatApi().sendMessage(
-                      widget.user, _chattingController.text, Type.text);
+                  ChatApi().sendMessage(widget.user, _chattingController.text,
+                      Type.text, currentUser!);
                   _chattingController.text = "";
                 }
               },

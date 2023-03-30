@@ -42,17 +42,17 @@ class AuthMethods {
             .uploadImageToStorage('profilepics', file, false);
 
         final UserModel.User user = UserModel.User(
-          username: username,
-          uid: cred.user!.uid,
-          email: email,
-          bio: bio,
-          followers: [],
-          following: [],
-          photoUrl: photoUrl,
-          dob: dob,
-          hobby: hobby,
-          study: study,
-        );
+            username: username,
+            uid: cred.user!.uid,
+            email: email,
+            bio: bio,
+            followers: [],
+            following: [],
+            photoUrl: photoUrl,
+            dob: dob,
+            hobby: hobby,
+            study: study,
+            pushToken: '');
 
         await _firestore
             .collection('user')

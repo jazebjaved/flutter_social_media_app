@@ -7,10 +7,8 @@ import '../resources/firestore_method.dart';
 
 class commentCard extends StatelessWidget {
   final snap;
-  const commentCard({
-    super.key,
-    this.snap,
-  });
+  final String postOwnerId;
+  const commentCard({super.key, this.snap, required this.postOwnerId});
 
   Future<dynamic> _DeleteConfirmation(BuildContext context) {
     return showDialog(
@@ -28,8 +26,8 @@ class commentCard extends StatelessWidget {
                   ),
                 ),
                 onPressed: () async {
-                  await FirestoreMethods().deleteComment(
-                      snap['uid'], snap['postId'], snap['commentId'], context);
+                  await FirestoreMethods().deleteComment(snap['uid'],
+                      snap['postId'], snap['commentId'], postOwnerId, context);
                   Navigator.of(context).pop();
                 },
               ),
