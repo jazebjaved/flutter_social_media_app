@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_app/misc/utils.dart';
@@ -55,23 +57,23 @@ class FirestoreMethods {
           'likes': FieldValue.arrayRemove([uid])
         });
 
-        await _firestore
-            .collection('feed')
+        var doc = await _firestore
+            .collection('notifyFeeds')
             .doc(post.uid)
-            .collection('like')
-            .doc(post.postId)
-            .collection('likebyID')
-            .doc(user.uid)
-            .get()
-            .then((doc) {
-          if (doc.exists) {
-            doc.reference.delete();
-          }
+            .collection('feeds')
+            .where('type', isEqualTo: 'like')
+            .where('postId', isEqualTo: post.postId)
+            .where('userId', isEqualTo: user.uid)
+            .get();
+        doc.docs.forEach((element) {
+          element.reference.delete();
+          print('deleted ${element.reference.id}');
         });
       } else {
         await _firestore.collection('post').doc(post.postId).update({
           'likes': FieldValue.arrayUnion([uid])
         });
+        String notificationId = const Uuid().v1();
 
         final NotifyFeed notifyfeed = NotifyFeed(
           type: type,
@@ -84,15 +86,23 @@ class FirestoreMethods {
           read: '',
           followId: '',
           commentId: '',
+          notificationId: notificationId,
         );
         if (_auth.currentUser!.uid != post.uid) {
+          // await _firestore
+          //     .collection('feed')
+          //     .doc(post.uid)
+          //     .collection('like')
+          //     .doc(post.postId)
+          //     .collection('likebyID')
+          //     .doc(user.uid)
+          //     .set(notifyfeed.toJson());
+
           await _firestore
-              .collection('feed')
+              .collection('notifyFeeds')
               .doc(post.uid)
-              .collection('like')
-              .doc(post.postId)
-              .collection('likebyID')
-              .doc(user.uid)
+              .collection('feeds')
+              .doc(notificationId)
               .set(notifyfeed.toJson());
         }
       }
@@ -122,6 +132,9 @@ class FirestoreMethods {
           'text': text,
           'datePublished': DateTime.now(),
         });
+
+        String notificationId = const Uuid().v1();
+
         final NotifyFeed notifyfeed = NotifyFeed(
           type: type,
           username: user.username,
@@ -133,15 +146,14 @@ class FirestoreMethods {
           read: '',
           followId: '',
           commentId: commentId,
+          notificationId: notificationId,
         );
         if (_auth.currentUser!.uid != post.uid) {
           await _firestore
-              .collection('feed')
+              .collection('notifyFeeds')
               .doc(post.uid)
-              .collection('comment')
-              .doc(post.postId)
-              .collection('commentbyID')
-              .doc(commentId)
+              .collection('feeds')
+              .doc(notificationId)
               .set(notifyfeed.toJson());
         }
       } else {
@@ -177,18 +189,17 @@ class FirestoreMethods {
             .doc(commentId)
             .delete();
 
-        await _firestore
-            .collection('feed')
+        var doc = await _firestore
+            .collection('notifyFeeds')
             .doc(postOwnerId)
-            .collection('comment')
-            .doc(postId)
-            .collection('commentbyID')
-            .doc(commentId)
-            .get()
-            .then((doc) {
-          if (doc.exists) {
-            doc.reference.delete();
-          }
+            .collection('feeds')
+            .where('type', isEqualTo: 'comment')
+            .where('postId', isEqualTo: postId)
+            .where('userId', isEqualTo: uid)
+            .get();
+        doc.docs.forEach((element) {
+          element.reference.delete();
+          print('deleted ${element.reference.id}');
         });
         ShowSnackBar('Many congragulation pot deleted', context);
       } else {
@@ -218,16 +229,16 @@ class FirestoreMethods {
           'following': FieldValue.arrayRemove([followId])
         });
 
-        await _firestore
-            .collection('feed')
+        var doc = await _firestore
+            .collection('notifyFeeds')
             .doc(followId)
-            .collection('follow')
-            .doc(currentUser.uid)
-            .get()
-            .then((doc) {
-          if (doc.exists) {
-            doc.reference.delete();
-          }
+            .collection('feeds')
+            .where('type', isEqualTo: 'follow')
+            .where('userId', isEqualTo: currentUser.uid)
+            .get();
+        doc.docs.forEach((element) {
+          element.reference.delete();
+          print('deleted ${element.reference.id}');
         });
       } else {
         await _firestore.collection('user').doc(followId).update({
@@ -236,6 +247,9 @@ class FirestoreMethods {
         await _firestore.collection('user').doc(currentUser.uid).update({
           'following': FieldValue.arrayUnion([followId])
         });
+
+        String notificationId = const Uuid().v1();
+
         final NotifyFeed notifyfeed = NotifyFeed(
           type: type,
           username: currentUser.username,
@@ -247,13 +261,14 @@ class FirestoreMethods {
           read: '',
           followId: currentUser.uid,
           commentId: '',
+          notificationId: notificationId,
         );
 
         await _firestore
-            .collection('feed')
+            .collection('notifyFeeds')
             .doc(followId)
-            .collection('follow')
-            .doc(currentUser.uid)
+            .collection('feeds')
+            .doc(notificationId)
             .set(notifyfeed.toJson());
       }
     } catch (e) {
@@ -265,57 +280,36 @@ class FirestoreMethods {
     return _firestore.collection('post').where('uid', isEqualTo: uid).get();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getLikeNotifyFeed(String postId) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> gettNotifyFeed() {
     return _firestore
-        .collection('feed')
+        .collection('notifyFeeds')
         .doc(_auth.currentUser!.uid)
-        .collection('like')
-        .doc(postId)
-        .collection('likebyID')
+        .collection('feeds')
         .snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getCommentNotifyFeed(
-      String postId) {
-    return _firestore
-        .collection('feed')
-        .doc(_auth.currentUser!.uid)
-        .collection('comment')
-        .doc(postId)
-        .collection('commentbyID')
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> getFollowNotifyFeed() {
-    return _firestore
-        .collection('feed')
-        .doc(_auth.currentUser!.uid)
-        .collection('follow')
-        .snapshots();
-  }
-
-  Future<void> updateFollowReadStatus(NotifyFeed notifyFeed) async {
+  Future<void> updateNotifyReadStatus(NotifyFeed notifyFeed) async {
     try {
       var a = await _firestore
-          .collection('feed')
+          .collection('notifyFeeds')
           .doc(_auth.currentUser!.uid)
-          .collection('follow')
-          .doc(notifyFeed.followId)
+          .collection('feeds')
+          .doc(notifyFeed.notificationId)
           .get();
 
       if (a.exists) {
         return _firestore
-            .collection('feed')
+            .collection('notifyFeeds')
             .doc(_auth.currentUser!.uid)
-            .collection('follow')
-            .doc(notifyFeed.followId)
+            .collection('feeds')
+            .doc(notifyFeed.notificationId)
             .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
       } else {
         return _firestore
-            .collection('feed')
+            .collection('notifyFeeds')
             .doc(_auth.currentUser!.uid)
-            .collection('follow')
-            .doc(notifyFeed.followId)
+            .collection('feeds')
+            .doc(notifyFeed.notificationId)
             .set({'read': DateTime.now().millisecondsSinceEpoch.toString()});
       }
     } catch (e) {
@@ -323,85 +317,12 @@ class FirestoreMethods {
     }
   }
 
-  Future<void> updateLikeReadStatus(NotifyFeed notifyFeed) async {
-    try {
-      var a = await _firestore
-          .collection('feed')
-          .doc(_auth.currentUser!.uid)
-          .collection('like')
-          .doc(notifyFeed.postId)
-          .collection('likebyID')
-          .doc(notifyFeed.userId)
-          .get();
-
-      if (a.exists) {
-        return _firestore
-            .collection('feed')
-            .doc(_auth.currentUser!.uid)
-            .collection('like')
-            .doc(notifyFeed.postId)
-            .collection('likebyID')
-            .doc(notifyFeed.userId)
-            .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
-      } else {
-        return _firestore
-            .collection('feed')
-            .doc(_auth.currentUser!.uid)
-            .collection('like')
-            .doc(notifyFeed.postId)
-            .collection('likebyID')
-            .doc(notifyFeed.userId)
-            .set({'read': DateTime.now().millisecondsSinceEpoch.toString()});
-      }
-    } catch (e) {
-      print(e.toString());
-    }
+  Future<QuerySnapshot<Map<String, dynamic>>> getUnreadNotificationAmount() {
+    return _firestore
+        .collection('notifyFeeds')
+        .doc(_auth.currentUser!.uid)
+        .collection('feeds')
+        .where('read', isEqualTo: '')
+        .get();
   }
-
-  Future<void> updateCommentReadStatus(NotifyFeed notifyFeed) async {
-    try {
-      var a = await _firestore
-          .collection('feed')
-          .doc(_auth.currentUser!.uid)
-          .collection('comment')
-          .doc(notifyFeed.postId)
-          .collection('commentbyID')
-          .doc(notifyFeed.commentId)
-          .get();
-
-      if (a.exists) {
-        return _firestore
-            .collection('feed')
-            .doc(_auth.currentUser!.uid)
-            .collection('comment')
-            .doc(notifyFeed.postId)
-            .collection('commentbyID')
-            .doc(notifyFeed.commentId)
-            .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
-      } else {
-        return _firestore
-            .collection('feed')
-            .doc(_auth.currentUser!.uid)
-            .collection('comment')
-            .doc(notifyFeed.postId)
-            .collection('commentbyID')
-            .doc(notifyFeed.commentId)
-            .set({'read': DateTime.now().millisecondsSinceEpoch.toString()});
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-// Stream<QuerySnapshot<Map<String, dynamic>>> getUnreadNotificationAmount(
-//     UserModel.User chatUser,
-//   ) {
-//     return firestore
-//         .collection('chat/${getConversationID(chatUser.uid)}/messages/')
-//         .where('read', isEqualTo: '')
-//         .snapshots();
-
-//     // int Count = query.docs.length;
-//     // return Count;
-//   }
 }

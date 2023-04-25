@@ -15,7 +15,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart' as UserModel;
+import '../provider/theme_provider.dart';
 import '../resources/chatApi.dart';
+import '../widgets/change_theme_widget_button.dart';
+import '../widgets/my_drawer_header.dart';
 import 'chatting_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -90,6 +93,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     Widget PersonalDetailCard(
       Icon icon,
       String title,
@@ -101,7 +106,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             CircleAvatar(
               radius: 27,
-              backgroundColor: const Color.fromARGB(162, 217, 212, 212),
+              backgroundColor:
+                  themeProvider.isDarkMode ? null : Colors.grey[300],
+              foregroundColor: Theme.of(context).colorScheme.primary,
               child: icon,
             ),
             const SizedBox(
@@ -133,6 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: Text(
                 'Profile',
               ),
+              automaticallyImplyLeading: true,
               actions: [
                 if (FirebaseAuth.instance.currentUser!.uid == widget.uid)
                   IconButton(
@@ -147,6 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
               ],
             ),
+            drawer: MyHeaderDrawer(),
             body: SingleChildScrollView(
               child: StreamBuilder(
                   stream: ChatApi().updateFollowers(widget.uid),
@@ -180,7 +189,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Center(
                                   child: CircleAvatar(
                                     radius: 54,
-                                    backgroundColor: Colors.red,
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
                                     child: CircleAvatar(
                                       radius: 50,
                                       backgroundImage: NetworkImage(
@@ -204,8 +214,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Text(
                                     _userList.bio,
                                     style: TextStyle(
-                                        fontSize: 16,
-                                        color: Color.fromARGB(255, 82, 79, 79)),
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(
@@ -230,9 +240,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             ),
                                             Text(
                                               'Posts',
-                                              style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 121, 118, 118)),
                                             )
                                           ],
                                         ),
@@ -249,9 +256,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             ),
                                             Text(
                                               'Followings',
-                                              style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 121, 118, 118)),
                                             )
                                           ],
                                         ),
@@ -268,9 +272,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             ),
                                             Text(
                                               'Followers',
-                                              style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 121, 118, 118)),
                                             )
                                           ],
                                         ),
@@ -293,7 +294,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         BorderRadius.circular(
                                                             15)),
                                                 backgroundColor:
-                                                    const Color(0xFFEE0F38),
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 48,
@@ -324,7 +327,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                     .circular(
                                                                         15)),
                                                     backgroundColor:
-                                                        const Color(0xFFEE0F38),
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
                                                     padding: const EdgeInsets
                                                             .symmetric(
                                                         horizontal: 48,
@@ -353,7 +358,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                     .circular(
                                                                         15)),
                                                     backgroundColor:
-                                                        const Color(0xFFEE0F38),
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
                                                     padding: const EdgeInsets
                                                             .symmetric(
                                                         horizontal: 48,
@@ -380,8 +387,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             .instance.currentUser!.uid !=
                                         widget.uid)
                                       CircleAvatar(
-                                        backgroundColor: const Color.fromARGB(
-                                            58, 244, 67, 54),
+                                        backgroundColor:
+                                            themeProvider.isDarkMode
+                                                ? null
+                                                : Colors.red[200],
+                                        foregroundColor:
+                                            themeProvider.isDarkMode
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                : Color.fromARGB(180, 0, 0, 0),
                                         radius: 28,
                                         child: IconButton(
                                           onPressed: () {
@@ -394,7 +409,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           },
                                           icon: const Icon(
                                             Icons.chat_outlined,
-                                            color: Colors.red,
                                           ),
                                         ),
                                       ),
@@ -421,7 +435,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   PersonalDetailCard(
                                       const Icon(
                                         Icons.school_outlined,
-                                        color: Colors.red,
                                         size: 32,
                                       ),
                                       'Field of Study',
@@ -429,7 +442,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   PersonalDetailCard(
                                     const Icon(
                                       Icons.calendar_today,
-                                      color: Colors.red,
                                       size: 32,
                                     ),
                                     'Date of Birth',
@@ -439,7 +451,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   PersonalDetailCard(
                                       const Icon(
                                         Icons.play_circle_outline,
-                                        color: Colors.red,
                                         size: 32,
                                       ),
                                       'Hobby',
@@ -455,14 +466,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             style: TextButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15)),
-                                backgroundColor:
-                                    const Color.fromARGB(57, 255, 255, 255),
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 48, vertical: 14)),
                             onPressed: () {},
                             child: const Text(
                               'Photos',
-                              style: TextStyle(color: Colors.red, fontSize: 18),
+                              style: TextStyle(fontSize: 18),
                             ),
                           ),
                           FutureBuilder(
@@ -475,7 +484,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   return const Center(
                                     child: Text(
                                       'No Post yet',
-                                      style: TextStyle(color: Colors.red),
                                     ),
                                   );
                                 }

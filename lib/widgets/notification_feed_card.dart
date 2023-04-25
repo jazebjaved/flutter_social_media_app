@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/notification_feed.dart';
+import '../provider/notification_feed_provider.dart';
+import '../provider/theme_provider.dart';
 import '../resources/firestore_method.dart';
 import '../screen/profile_screen.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -13,15 +16,17 @@ class NotificationFeedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     if (notifyFeed.read.isEmpty) {
-      FirestoreMethods().updateCommentReadStatus(notifyFeed);
-      FirestoreMethods().updateFollowReadStatus(notifyFeed);
-      FirestoreMethods().updateLikeReadStatus(notifyFeed);
+      FirestoreMethods().updateNotifyReadStatus(notifyFeed);
+      Provider.of<NotifyFeedCountProvider>(context, listen: true)
+          .getNotifyFeedList();
     }
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       elevation: 3,
-      shadowColor: Color(0xFFEE0F38),
+      shadowColor: Theme.of(context).colorScheme.primary,
       child: Container(
         padding: const EdgeInsets.only(
           left: 10,
@@ -57,25 +62,31 @@ class NotificationFeedCard extends StatelessWidget {
                             fontSize: 16, fontWeight: FontWeight.w600),
                         children: <InlineSpan>[
                           if (notifyFeed.type == 'comment')
-                            const TextSpan(
+                            TextSpan(
                               text: ' Replied on your post',
                               style: TextStyle(
                                   fontSize: 14,
-                                  color: Color.fromARGB(255, 123, 121, 121)),
+                                  color: themeProvider.isDarkMode
+                                      ? Colors.white70
+                                      : Color.fromARGB(255, 123, 121, 121)),
                             ),
                           if (notifyFeed.type == 'like')
-                            const TextSpan(
+                            TextSpan(
                               text: ' Like your Post',
                               style: TextStyle(
                                   fontSize: 14,
-                                  color: Color.fromARGB(255, 123, 121, 121)),
+                                  color: themeProvider.isDarkMode
+                                      ? Colors.white70
+                                      : Color.fromARGB(255, 123, 121, 121)),
                             ),
                           if (notifyFeed.type == 'follow')
-                            const TextSpan(
+                            TextSpan(
                               text: ' Start Following you',
                               style: TextStyle(
                                   fontSize: 14,
-                                  color: Color.fromARGB(255, 123, 121, 121)),
+                                  color: themeProvider.isDarkMode
+                                      ? Colors.white70
+                                      : Color.fromARGB(255, 123, 121, 121)),
                             ),
                         ])),
                     // Text(
@@ -88,8 +99,10 @@ class NotificationFeedCard extends StatelessWidget {
                     ),
                     Text(
                       timeago.format(notifyFeed.timestamp),
-                      style:
-                          TextStyle(color: Color.fromARGB(255, 123, 121, 121)),
+                      style: TextStyle(
+                          color: themeProvider.isDarkMode
+                              ? Colors.white70
+                              : Color.fromARGB(255, 123, 121, 121)),
                     ),
                   ],
                 ),

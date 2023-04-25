@@ -157,7 +157,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
             ),
             Text(
               widget.user.bio,
-              style: TextStyle(color: Color.fromARGB(169, 0, 0, 0)),
             ),
           ],
         ),
@@ -188,7 +187,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
                     },
                     icon: Icon(
                       Icons.emoji_emotions_outlined,
-                      color: Colors.red,
                       size: 26,
                     ),
                   ),
@@ -213,7 +211,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
                     },
                     icon: Icon(
                       Icons.image_outlined,
-                      color: Colors.red,
                       size: 26,
                     ),
                   ),
@@ -225,7 +222,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
                     },
                     icon: Icon(
                       Icons.camera_alt_outlined,
-                      color: Colors.red,
                       size: 26,
                     ),
                   ),
@@ -237,7 +233,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundColor: Color(0xFFEE0F38),
+            backgroundColor: Theme.of(context).colorScheme.primary,
             radius: 24,
             child: MaterialButton(
               onPressed: () {
@@ -249,8 +245,8 @@ class _ChattingScreenState extends State<ChattingScreen> {
               },
               child: Icon(
                 Icons.send_outlined,
-                color: Colors.white,
                 size: 25,
+                color: Colors.white,
               ),
             ),
           ),

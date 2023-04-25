@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../models/user.dart' as UserModel;
 import '../provider/user_provider.dart';
 import '../widgets/friend_suggestion.dart';
+import '../widgets/my_drawer_header.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -36,29 +37,32 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Find Friends')),
+      appBar: AppBar(
+        title: const Text('Find Friends'),
+      ),
+      drawer: MyHeaderDrawer(),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Column(children: [
           Container(
             padding: const EdgeInsets.all(25),
             child: TextFormField(
-                controller: _searchController,
-                onFieldSubmitted: (String _) {
-                  setState(() {
-                    _isShowUser = true;
-                  });
-                },
-                decoration: const InputDecoration(
-                  filled: true, //<-- SEE HERE
-                  fillColor: Colors.white,
-                  labelText: 'Search Friends',
-                  prefixIcon: Icon(Icons.emoji_people_outlined),
+              controller: _searchController,
+              onFieldSubmitted: (String _) {
+                setState(() {
+                  _isShowUser = true;
+                });
+              },
+              decoration: const InputDecoration(
+                filled: true, //<-- SEE HERE
+                labelText: 'Search Friends',
+                prefixIcon: Icon(Icons.emoji_people_outlined),
 
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1, color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                )),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 1, color: Colors.grey),
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
+              ),
+            ),
           ),
           _isShowUser
               ? FutureBuilder(
@@ -78,7 +82,6 @@ class _SearchScreenState extends State<SearchScreen> {
                         return const Center(
                           child: Text(
                             'No User Found',
-                            style: TextStyle(color: Colors.red),
                           ),
                         );
                       }
@@ -106,7 +109,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           });
                     } else {
                       //if the process is not finished then show the indicator process
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                   }),
                 )

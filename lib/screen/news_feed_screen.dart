@@ -4,6 +4,7 @@ import 'package:first_app/resources/firestore_method.dart';
 import 'package:first_app/screen/chat_screen.dart';
 import 'package:first_app/screen/notification_feed_screen.dart';
 import 'package:first_app/widgets/addpost_card.dart';
+import 'package:first_app/widgets/my_drawer_header.dart';
 import 'package:first_app/widgets/post_card.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,7 @@ import 'package:async/async.dart' show StreamGroup;
 import '../provider/notification_feed_provider.dart';
 import '../provider/user_provider.dart';
 import '../resources/chatApi.dart';
+import '../widgets/change_theme_widget_button.dart';
 
 class NewsFeed extends StatelessWidget {
   const NewsFeed({super.key});
@@ -40,10 +42,6 @@ class NewsFeed extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           centerTitle: false,
-          leading: IconButton(
-            icon: const Icon(Icons.menu_outlined),
-            onPressed: () {},
-          ),
           title: Text('Hi, ${user?.username} 😍'),
           actions: [
             IconButton(
@@ -58,6 +56,7 @@ class NewsFeed extends StatelessWidget {
             ),
           ],
         ),
+        drawer: MyHeaderDrawer(),
         body: SingleChildScrollView(
           physics: const ScrollPhysics(),
           child: Column(
@@ -91,6 +90,9 @@ class NewsFeed extends StatelessWidget {
                   }
                   final data = snapshots.data;
                   _list = data?.map((e) => Post.fromJson(e)).toList() ?? [];
+
+                  //work on it later
+                  // _list.retainWhere((element) => element.uid == user?.uid || user!.following.contains(element.uid));
                   // _list.add(value);
                   if (_list.isEmpty) {
                     return const Center(

@@ -71,115 +71,115 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Edit Profile'),
+      ),
       body: Row(
         children: [
           Expanded(
             child: Scaffold(
-                backgroundColor: Colors.white,
                 body: SafeArea(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 35),
-                          child: Column(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 35),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 100,
+                          ),
+                          Stack(
                             children: [
-                              const SizedBox(
-                                height: 100,
-                              ),
-                              Stack(
-                                children: [
-                                  _image != null
-                                      ? CircleAvatar(
-                                          radius: 50,
-                                          backgroundImage: MemoryImage(_image!),
-                                        )
-                                      : CircleAvatar(
-                                          radius: 50,
-                                          backgroundImage: NetworkImage(
-                                              widget.user.photoUrl),
-                                        ),
-                                  Positioned(
-                                    bottom: -12,
-                                    right: 10,
-                                    child: IconButton(
-                                      onPressed: selectImage,
-                                      icon: const Icon(
-                                        Icons.add_a_photo_outlined,
-                                      ),
+                              _image != null
+                                  ? CircleAvatar(
+                                      radius: 50,
+                                      backgroundImage: MemoryImage(_image!),
+                                    )
+                                  : CircleAvatar(
+                                      radius: 50,
+                                      backgroundImage:
+                                          NetworkImage(widget.user.photoUrl),
                                     ),
+                              Positioned(
+                                bottom: -12,
+                                right: 10,
+                                child: IconButton(
+                                  onPressed: selectImage,
+                                  icon: const Icon(
+                                    Icons.add_a_photo_outlined,
                                   ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              TextFieldInput(
-                                textEditingController: emailController,
-                                textInputType: TextInputType.emailAddress,
-                                hintText: 'Email ID',
-                                iconType: Icon(Icons.email_outlined),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              TextFieldInput(
-                                textEditingController: usernameController,
-                                textInputType: TextInputType.text,
-                                hintText: 'Username',
-                                iconType: Icon(Icons.verified_user_outlined),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              TextFieldInput(
-                                textEditingController: bioController,
-                                textInputType: TextInputType.multiline,
-                                hintText: 'Bio',
-                                iconType: Icon(Icons.content_copy),
-                              ),
-                              const SizedBox(
-                                height: 25,
-                              ),
-                              Container(
-                                width: double.infinity,
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                      padding: EdgeInsets.all(13),
-                                      backgroundColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12))),
-                                  onPressed: updateUserProfile,
-                                  onHover: (value) {},
-                                  child: isLoading
-                                      ? const Center(
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                      : const Text(
-                                          'Update',
-                                          style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 255, 255, 255),
-                                              fontSize: 21,
-                                              fontWeight: FontWeight.w500),
-                                        ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 18,
                               ),
                             ],
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                )),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          TextFieldInput(
+                            textEditingController: emailController,
+                            textInputType: TextInputType.emailAddress,
+                            hintText: 'Email ID',
+                            iconType: Icon(Icons.email_outlined),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFieldInput(
+                            textEditingController: usernameController,
+                            textInputType: TextInputType.text,
+                            hintText: 'Username',
+                            iconType: Icon(Icons.verified_user_outlined),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFieldInput(
+                            textEditingController: bioController,
+                            textInputType: TextInputType.multiline,
+                            hintText: 'Bio',
+                            iconType: Icon(Icons.content_copy),
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                  padding: EdgeInsets.all(13),
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12))),
+                              onPressed: updateUserProfile,
+                              onHover: (value) {},
+                              child: isLoading
+                                  ? const Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Update',
+                                      style: TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          fontSize: 21,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 18,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )),
           ),
         ],
       ),

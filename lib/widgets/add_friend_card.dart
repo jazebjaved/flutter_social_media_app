@@ -56,7 +56,6 @@ class AddFriendCard extends StatelessWidget {
                   ),
                   child: const Text(
                     'View Profile',
-                    style: TextStyle(color: Color(0xFFEE0F38)),
                   ),
                 ),
               ],

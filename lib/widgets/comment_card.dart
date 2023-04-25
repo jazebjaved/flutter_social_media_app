@@ -1,7 +1,9 @@
+import 'package:first_app/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../resources/firestore_method.dart';
 
@@ -44,6 +46,8 @@ class commentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     return Column(children: [
       Card(
         margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
@@ -81,13 +85,16 @@ class commentCard extends StatelessWidget {
                       Text(
                         DateFormat.yMEd()
                             .format(snap['datePublished'].toDate()),
-                        style: TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
                   const Spacer(),
                   CircleAvatar(
-                    backgroundColor: Color.fromARGB(65, 158, 158, 158),
+                    backgroundColor:
+                        themeProvider.isDarkMode ? null : Colors.red[100],
+                    foregroundColor:
+                        themeProvider.isDarkMode ? null : Colors.black87,
                     radius: 20,
                     child: IconButton(
                       onPressed: () {

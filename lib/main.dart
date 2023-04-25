@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:first_app/provider/comments_provider.dart';
 import 'package:first_app/provider/notification_feed_provider.dart';
+import 'package:first_app/provider/theme_provider.dart';
 import 'package:first_app/provider/user_provider.dart';
 import 'package:first_app/responsive/responsive_layout.dart';
 import 'package:first_app/screen/add_post_screen.dart';
@@ -55,68 +56,82 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => UserProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => CommentsProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => NotifyFeedCountProvider(),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'Social Media App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: 'Poppins-Regular',
-
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
-          colorScheme: ColorScheme.fromSwatch().copyWith(
-            primary: Color(0xFFEE0F38),
-            secondary: Color.fromARGB(255, 219, 185, 86),
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => UserProvider(),
           ),
-        ),
+          ChangeNotifierProvider(
+            create: (_) => CommentsProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => NotifyFeedCountProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ThemeProvider(),
+          ),
+        ],
+        // builder: (context, _) {
+        //   final themeProvider = Provider.of<ThemeProvider>(
+        //     context,
+        //   );
 
-        // home: const ResponsiveLayout(
-        //     webScreenLayout: WebScreenLayout(),
-        //     mobileScreenLayout: MobileScreenLayout(),),
-        home: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.active) {
-              if (snapshot.hasData) {
-                return const ResponsiveLayout(
-                    webScreenLayout: WebScreenLayout(),
-                    mobileScreenLayout: MobileScreenLayout());
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Text('${snapshot.error}'),
-                );
-              }
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-              );
-            }
-            return const Login();
-          },
-        ),
+        child: Consumer<ThemeProvider>(
+            builder: (context, ThemeProvider themeProvider, child) {
+          return MaterialApp(
+            title: 'Social Media App',
+            debugShowCheckedModeBanner: false,
 
-        // home: AddPostScreen(),
-      ),
-    );
+            themeMode: themeProvider.themeMode,
+            theme: MyThemes.lightTheme,
+            darkTheme: MyThemes.darkTheme,
+
+            // theme: ThemeData(
+            //   fontFamily: 'Poppins-Regular',
+
+            //   // This is the theme of your application.
+            //   //
+            //   // Try running your application with "flutter run". You'll see the
+            //   // application has a blue toolbar. Then, without quitting the app, try
+            //   // changing the primarySwatch below to Colors.green and then invoke
+            //   // "hot reload" (press "r" in the console where you ran "flutter run",
+            //   // or simply save your changes to "hot reload" in a Flutter IDE).
+            //   // Notice that the counter didn't reset back to zero; the application
+            //   // is not restarted.
+            //   colorScheme: ColorScheme.fromSwatch().copyWith(
+            //     primary: Color(0xFFEE0F38),
+            //     secondary: Color.fromARGB(255, 219, 185, 86),
+            //   ),
+            // ),
+
+            // home: const ResponsiveLayout(
+            //     webScreenLayout: WebScreenLayout(),
+            //     mobileScreenLayout: MobileScreenLayout(),),
+            home: StreamBuilder(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return const ResponsiveLayout(
+                      webScreenLayout: WebScreenLayout(),
+                      mobileScreenLayout: MobileScreenLayout());
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('${snapshot.error}'),
+                  );
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  );
+                }
+                return const Login();
+              },
+            ),
+
+            // home: AddPostScreen(),
+          );
+        }));
   }
 }

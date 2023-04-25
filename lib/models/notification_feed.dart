@@ -10,6 +10,7 @@ class NotifyFeed {
     required this.read,
     required this.followId,
     required this.commentId,
+    required this.notificationId,
   });
 
   late final String type;
@@ -22,6 +23,7 @@ class NotifyFeed {
   late final String read;
   late final String followId;
   late final String commentId;
+  late final String notificationId;
 
   NotifyFeed.fromJson(Map<String, dynamic> json) {
     type = json['type'];
@@ -34,6 +36,7 @@ class NotifyFeed {
     read = json['read'].toString();
     followId = json['followId'].toString();
     commentId = json['commentId'].toString();
+    notificationId = json['notificationId'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +51,7 @@ class NotifyFeed {
     data['read'] = read;
     data['followId'] = followId;
     data['commentId'] = commentId;
+    data['notificationId'] = notificationId;
 
     return data;
   }

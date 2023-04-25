@@ -4,6 +4,7 @@ import 'package:first_app/resources/chatApi.dart';
 import 'package:first_app/widgets/chat_user_card.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart' as UserModel;
+import '../widgets/change_theme_widget_button.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -27,20 +28,20 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(title: const Text('All Chats')),
-      floatingActionButton: FloatingActionButton(
-        heroTag: Text("btn1"),
-        backgroundColor: const Color(0xFFEE0F38),
-        onPressed: () {
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (BuildContext context) => const AddPostScreen(),
-          //   ),
-          // );
-        },
-        child: const Icon(Icons.add_comment_outlined),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   heroTag: Text("btn1"),
+      //   backgroundColor: const Color(0xFFEE0F38),
+      //   onPressed: () {
+      //     // Navigator.of(context).push(
+      //     //   MaterialPageRoute(
+      //     //     builder: (BuildContext context) => const AddPostScreen(),
+      //     //   ),
+      //     // );
+      //   },
+      //   child: const Icon(Icons.add_comment_outlined),
+      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
@@ -56,19 +57,16 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
                 decoration: const InputDecoration(
                   filled: true, //<-- SEE HERE
-                  fillColor: Color.fromARGB(213, 243, 236, 236),
                   labelText: 'Search Chats',
                   prefixIcon: Icon(Icons.emoji_people_outlined),
 
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 0, color: Color.fromARGB(213, 243, 236, 236)),
                       borderRadius: BorderRadius.all(Radius.circular(15.0))),
                 )),
           ),
           _isShowUser
               ? const Center(
-                  child: Text('raja muna'),
+                  child: Text('No User Available'),
                 )
               : StreamBuilder(
                   stream: ChatApi().getAllUser(),

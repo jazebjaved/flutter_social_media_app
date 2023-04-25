@@ -8,6 +8,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart' as UserModel;
+import '../widgets/change_theme_widget_button.dart';
+import '../widgets/my_drawer_header.dart';
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({super.key});
@@ -141,9 +143,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               image: MemoryImage(_file!),
                             ),
                           )
-                        : const BoxDecoration(
+                        : BoxDecoration(
                             shape: BoxShape.rectangle,
-                            color: Color(0xFFEE0F38),
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                     child: _file != null
                         ? Align(
@@ -155,7 +157,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               },
                               icon: const Icon(
                                 Icons.cancel_outlined,
-                                color: Color(0xFFEE0F38),
                               ),
                             ),
                             alignment: Alignment.topCenter,
@@ -206,7 +207,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             style: TextButton.styleFrom(
                                 backgroundColor: _file == null
                                     ? Color.fromARGB(58, 238, 15, 56)
-                                    : Color(0xFFEE0F38),
+                                    : Theme.of(context).colorScheme.primary,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 36, vertical: 16)),
                             onPressed: _file == null

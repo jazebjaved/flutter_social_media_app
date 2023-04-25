@@ -13,6 +13,7 @@ import '../models/user.dart' as UserModel;
 
 import '../misc/utils.dart';
 import '../models/post.dart';
+import '../provider/theme_provider.dart';
 import '../provider/user_provider.dart';
 import '../screen/profile_screen.dart';
 
@@ -102,12 +103,13 @@ class _postCardState extends State<postCard> {
     // ).getComment;
     UserModel.User? user =
         Provider.of<UserProvider>(context, listen: false).getUser;
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       elevation: 18,
-      shadowColor: const Color(0xFFEE0F38),
+      shadowColor: Theme.of(context).colorScheme.primary,
       child: Container(
         padding: const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 4),
         child: Column(
@@ -157,7 +159,10 @@ class _postCardState extends State<postCard> {
                 ),
                 const Spacer(),
                 CircleAvatar(
-                  backgroundColor: Color.fromARGB(65, 158, 158, 158),
+                  backgroundColor:
+                      themeProvider.isDarkMode ? null : Colors.red[100],
+                  foregroundColor:
+                      themeProvider.isDarkMode ? null : Colors.black87,
                   radius: 20,
                   child: IconButton(
                     onPressed: () {
@@ -221,7 +226,6 @@ class _postCardState extends State<postCard> {
                       icon: widget.snap.likes.contains(widget.user)
                           ? const Icon(
                               Icons.favorite,
-                              color: Color(0xFFEE0F38),
                             )
                           : const Icon(
                               Icons.favorite_outline,
@@ -253,7 +257,6 @@ class _postCardState extends State<postCard> {
                       },
                       icon: const Icon(
                         Icons.comment_outlined,
-                        color: Color(0xFFEE0F38),
                       ),
                     ),
                     Text(postLen.toString())
@@ -263,7 +266,6 @@ class _postCardState extends State<postCard> {
                 IconButton(
                   onPressed: () {},
                   icon: const Icon(Icons.save_outlined),
-                  color: const Color(0xFFEE0F38),
                 )
               ],
             )

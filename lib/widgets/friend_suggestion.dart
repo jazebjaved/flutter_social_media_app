@@ -5,6 +5,7 @@ import 'package:first_app/widgets/add_friend_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/theme_provider.dart';
 import '../provider/user_provider.dart';
 import '../resources/firestore_method.dart';
 import '../models/user.dart' as UserModel;
@@ -32,6 +33,8 @@ class _FriendSuggestionState extends State<FriendSuggestion> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     // List<Stream> streamList = [
     //   FirestoreMethods().friendSuggestion(_user),
     //   FirestoreMethods().friendSuggestion3(_user),
@@ -78,9 +81,10 @@ class _FriendSuggestionState extends State<FriendSuggestion> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Container(
-                            child: const TabBar(
-                              labelColor: Colors.red,
-                              unselectedLabelColor: Colors.black,
+                            child: TabBar(
+                              indicatorColor: themeProvider.isDarkMode
+                                  ? Color(0xff03dac6)
+                                  : Color.fromARGB(255, 224, 45, 45),
                               tabs: [
                                 Tab(text: 'Suggested for you'),
                                 Tab(text: 'Discover People'),

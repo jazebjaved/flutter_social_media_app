@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/theme_provider.dart';
 import '../provider/user_provider.dart';
 import '../screen/add_post_screen.dart';
 import '../models/user.dart' as UserModel;
@@ -24,7 +25,7 @@ class addPostCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       elevation: 18,
-      shadowColor: const Color(0xFFEE0F38),
+      shadowColor: Theme.of(context).colorScheme.primary,
       child: Container(
         padding: const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 4),
         child: Column(

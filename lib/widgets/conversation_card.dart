@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_app/resources/chatApi.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../misc/data_utils.dart';
 import '../models/message.dart';
+import '../provider/theme_provider.dart';
 
 class ConversationCard extends StatelessWidget {
   final Message messages;
@@ -30,8 +32,8 @@ class ConversationCard extends StatelessWidget {
               horizontal: 10,
               vertical: 10,
             ),
-            decoration: const BoxDecoration(
-                color: Colors.red,
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
@@ -82,7 +84,6 @@ class ConversationCard extends StatelessWidget {
                 if (messages.read.isNotEmpty)
                   Icon(
                     Icons.done_all_outlined,
-                    color: Colors.blue,
                   ),
               ],
             ),

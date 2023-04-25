@@ -108,7 +108,7 @@ class _commentsScreenState extends State<commentsScreen> {
                     ),
                   ),
                   CircleAvatar(
-                    backgroundColor: Color(0xFFEE0F38),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     radius: 24,
                     child: MaterialButton(
                       onPressed: () async {

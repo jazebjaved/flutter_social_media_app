@@ -14,6 +14,7 @@ import '../models/user.dart' as UserModel;
 
 import '../provider/user_provider.dart';
 import '../resources/firestore_method.dart';
+import '../widgets/my_drawer_header.dart';
 import '../widgets/notification_feed_card.dart';
 
 class NotificationFeedScreen extends StatelessWidget {
@@ -24,9 +25,7 @@ class NotificationFeedScreen extends StatelessWidget {
     UserModel.User? user = Provider.of<UserProvider>(
       context,
     ).getUser;
-    List<Post> _postList = [];
-    final notifyFeedProvider =
-        Provider.of<NotifyFeedCountProvider>(context, listen: false);
+    List<NotifyFeed> notifyList = [];
 
     // Stream<List<DocumentSnapshot>> combine2Streams(
     //     Stream<QuerySnapshot> stream1, Stream<QuerySnapshot> stream2) {
@@ -37,19 +36,19 @@ class NotificationFeedScreen extends StatelessWidget {
     //           List.from(a.docs)..addAll(b.docs));
     // }
 
-    Stream<List<DocumentSnapshot>> combine2Streams(
-        Stream<QuerySnapshot> stream1,
-        Stream<QuerySnapshot> stream2,
-        Stream<QuerySnapshot> stream3) {
-      return Rx.combineLatest3(
-          stream1,
-          stream2,
-          stream3,
-          (QuerySnapshot a, QuerySnapshot b, QuerySnapshot c) =>
-              List.from(a.docs)
-                ..addAll(b.docs)
-                ..addAll(c.docs));
-    }
+    // Stream<List<DocumentSnapshot>> combine2Streams(
+    //     Stream<QuerySnapshot> stream1,
+    //     Stream<QuerySnapshot> stream2,
+    //     Stream<QuerySnapshot> stream3) {
+    //   return Rx.combineLatest3(
+    //       stream1,
+    //       stream2,
+    //       stream3,
+    //       (QuerySnapshot a, QuerySnapshot b, QuerySnapshot c) =>
+    //           List.from(a.docs)
+    //             ..addAll(b.docs)
+    //             ..addAll(c.docs));
+    // }
 
 //     growableList[0] = 'G';
 // print(growableList); // [G, B]
@@ -64,89 +63,64 @@ class NotificationFeedScreen extends StatelessWidget {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
         ),
       ),
-      body: FutureBuilder(
-        future: FirestoreMethods().currentUserPost(user!.uid),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: Text(
-                'no data',
-                style: TextStyle(color: Colors.red),
-              ),
+      drawer: MyHeaderDrawer(),
+      body: SingleChildScrollView(
+        physics: const ScrollPhysics(),
+        child: StreamBuilder(
+          stream: FirestoreMethods().gettNotifyFeed(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (!snapshot.hasData) {
+              return const Center(
+                child: Text(
+                  'no data',
+                ),
+              );
+            }
+            final data = snapshot.data?.docs;
+
+            notifyList = data
+                    ?.map((e) =>
+                        NotifyFeed.fromJson(e.data() as Map<String, dynamic>))
+                    .toList() ??
+                [];
+
+            notifyList.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+            // int count = notifyList
+            //     .where(
+            //       (element) => element.read == '',
+            //     )
+            //     .length;
+            // print(count);
+            // Timer.periodic(const Duration(seconds: 1),
+            //     (Timer t) => notifyFeedProvider.getNotifyFeedList(count));
+            //   List<NotifyFeed> unreadMessageCount = [];
+
+            //  var newlist = notifyList.retainWhere((element) => element.read == '');
+
+            //   unreadMessageCount =  List.from(notifyList);
+            //   print(unreadMessageCount.length);
+
+            return Column(
+              children: [
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: notifyList.length,
+                  itemBuilder: (context, index) => NotificationFeedCard(
+                    notifyFeed: notifyList[index],
+                  ),
+                ),
+              ],
             );
-          }
-
-          _postList =
-              snapshot.data?.docs.map((e) => Post.fromJson(e)).toList() ?? [];
-
-          return ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: _postList.length,
-            itemBuilder: (context, index) => StreamBuilder(
-              stream: combine2Streams(
-                FirestoreMethods().getFollowNotifyFeed(),
-                FirestoreMethods()
-                    .getCommentNotifyFeed(_postList[index].postId),
-                FirestoreMethods().getLikeNotifyFeed(_postList[index].postId),
-              ),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: Text(
-                      'no data',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  );
-                }
-                List<NotifyFeed> notifyList = [];
-                final data = snapshot.data;
-
-                notifyList = data
-                        ?.map((e) => NotifyFeed.fromJson(
-                            e.data() as Map<String, dynamic>))
-                        .toList() ??
-                    [];
-
-                notifyList.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-                int count = notifyList
-                    .where(
-                      (element) => element.read == '',
-                    )
-                    .length;
-                print(count);
-                Timer.periodic(const Duration(seconds: 1),
-                    (Timer t) => notifyFeedProvider.getNotifyFeedList(count));
-                //   List<NotifyFeed> unreadMessageCount = [];
-
-                //  var newlist = notifyList.retainWhere((element) => element.read == '');
-
-                //   unreadMessageCount =  List.from(notifyList);
-                //   print(unreadMessageCount.length);
-
-                return Column(
-                  children: [
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: notifyList.length,
-                      itemBuilder: (context, index) => NotificationFeedCard(
-                        notifyFeed: notifyList[index],
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../misc/data_utils.dart';
 import '../models/message.dart';
 import '../models/user.dart' as UserModel;
 
+import '../provider/theme_provider.dart';
 import '../resources/chatApi.dart';
 import '../screen/chatting_screen.dart';
 
@@ -15,6 +17,8 @@ class ChatUserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     int unreadMessageAmount = 0;
 
     Message? _message;
@@ -88,8 +92,6 @@ class ChatUserCard extends StatelessWidget {
                                             ? _message!.msg
                                             : 'Image 🖼️ '
                                         : user.bio,
-                                    style: const TextStyle(
-                                        color: Color.fromARGB(169, 0, 0, 0)),
                                   ),
                                 ],
                               ),
@@ -112,13 +114,14 @@ class ChatUserCard extends StatelessWidget {
                                   if (_message?.read == '' &&
                                       ChatApi().user.uid != _message!.fromId)
                                     CircleAvatar(
-                                      backgroundColor: Color(0xFFEE0F38),
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      foregroundColor:
+                                          Theme.of(context).primaryColor,
                                       radius: 14,
                                       child: Text(
                                         unreadMessageAmount.toString(),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
+                                        style: const TextStyle(),
                                       ),
                                     )
                                 ],
