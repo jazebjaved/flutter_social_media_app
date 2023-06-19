@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +23,7 @@ class NotificationFeedCard extends StatelessWidget {
           .getNotifyFeedList();
     }
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       elevation: 3,
       shadowColor: Theme.of(context).colorScheme.primary,
       child: Container(
@@ -68,7 +67,7 @@ class NotificationFeedCard extends StatelessWidget {
                                   fontSize: 14,
                                   color: themeProvider.isDarkMode
                                       ? Colors.white70
-                                      : Color.fromARGB(255, 123, 121, 121)),
+                                      : const Color.fromARGB(255, 123, 121, 121)),
                             ),
                           if (notifyFeed.type == 'like')
                             TextSpan(
@@ -77,7 +76,7 @@ class NotificationFeedCard extends StatelessWidget {
                                   fontSize: 14,
                                   color: themeProvider.isDarkMode
                                       ? Colors.white70
-                                      : Color.fromARGB(255, 123, 121, 121)),
+                                      : const Color.fromARGB(255, 123, 121, 121)),
                             ),
                           if (notifyFeed.type == 'follow')
                             TextSpan(
@@ -86,7 +85,7 @@ class NotificationFeedCard extends StatelessWidget {
                                   fontSize: 14,
                                   color: themeProvider.isDarkMode
                                       ? Colors.white70
-                                      : Color.fromARGB(255, 123, 121, 121)),
+                                      : const Color.fromARGB(255, 123, 121, 121)),
                             ),
                         ])),
                     // Text(
@@ -102,7 +101,7 @@ class NotificationFeedCard extends StatelessWidget {
                       style: TextStyle(
                           color: themeProvider.isDarkMode
                               ? Colors.white70
-                              : Color.fromARGB(255, 123, 121, 121)),
+                              : const Color.fromARGB(255, 123, 121, 121)),
                     ),
                   ],
                 ),

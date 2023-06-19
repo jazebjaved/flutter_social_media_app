@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_app/models/post.dart';
-import 'package:first_app/resources/firestore_method.dart';
 import 'package:first_app/screen/chat_screen.dart';
-import 'package:first_app/screen/notification_feed_screen.dart';
 import 'package:first_app/widgets/addpost_card.dart';
 import 'package:first_app/widgets/my_drawer_header.dart';
 import 'package:first_app/widgets/post_card.dart';
@@ -11,24 +9,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/user.dart' as UserModel;
-import 'package:async/async.dart' show StreamGroup;
 
-import '../provider/notification_feed_provider.dart';
 import '../provider/user_provider.dart';
 import '../resources/chatApi.dart';
-import '../widgets/change_theme_widget_button.dart';
 
 class NewsFeed extends StatelessWidget {
   const NewsFeed({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<Post> _list = [];
+    List<Post> list = [];
     UserModel.User? user = Provider.of<UserProvider>(
       context,
     ).getUser;
-    final notifyFeedProvider =
-        Provider.of<NotifyFeedCountProvider>(context, listen: false);
 
     Stream<List<DocumentSnapshot>> combine2Streams(
         Stream<QuerySnapshot> stream1, Stream<QuerySnapshot> stream2) {
@@ -45,7 +38,7 @@ class NewsFeed extends StatelessWidget {
           title: Text('Hi, ${user?.username} 😍'),
           actions: [
             IconButton(
-              icon: const Icon(Icons.chat_outlined),
+              icon: const Icon(Icons.chat),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -56,7 +49,7 @@ class NewsFeed extends StatelessWidget {
             ),
           ],
         ),
-        drawer: MyHeaderDrawer(),
+        drawer: const MyHeaderDrawer(),
         body: SingleChildScrollView(
           physics: const ScrollPhysics(),
           child: Column(
@@ -89,12 +82,14 @@ class NewsFeed extends StatelessWidget {
                     );
                   }
                   final data = snapshots.data;
-                  _list = data?.map((e) => Post.fromJson(e)).toList() ?? [];
+                  list = data?.map((e) => Post.fromJson(e)).toList() ?? [];
+                  list.sort(
+                      (a, b) => b.datePublished.compareTo(a.datePublished));
 
                   //work on it later
                   // _list.retainWhere((element) => element.uid == user?.uid || user!.following.contains(element.uid));
                   // _list.add(value);
-                  if (_list.isEmpty) {
+                  if (list.isEmpty) {
                     return const Center(
                       child: Text(
                         'No Post yet',
@@ -103,11 +98,11 @@ class NewsFeed extends StatelessWidget {
                     );
                   }
                   return ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: _list.length,
+                    itemCount: list.length,
                     itemBuilder: (context, index) => postCard(
-                      snap: _list[index],
+                      snap: list[index],
                       user: ChatApi().user.uid,
                     ),
                   );

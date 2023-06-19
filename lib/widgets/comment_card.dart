@@ -1,7 +1,5 @@
 import 'package:first_app/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +50,7 @@ class commentCard extends StatelessWidget {
       Card(
         margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
         elevation: 3,
-        shadowColor: Color.fromARGB(255, 255, 254, 254),
+        shadowColor: const Color.fromARGB(255, 255, 254, 254),
         child: Container(
           padding: const EdgeInsets.only(
             left: 25,
@@ -114,13 +112,13 @@ class commentCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(right: 30),
+                    padding: const EdgeInsets.only(right: 30),
                     child: Align(
                       alignment: Alignment.topLeft,
                       child: Text(
                         snap['text'],
                         textAlign: TextAlign.start,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 15,
                         ),
                       ),

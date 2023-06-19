@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,7 +6,6 @@ import 'package:first_app/models/notification_feed.dart';
 import 'package:first_app/resources/storage_method.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 import '../models/post.dart';
 import '../models/user.dart' as UserModel;
@@ -65,10 +63,10 @@ class FirestoreMethods {
             .where('postId', isEqualTo: post.postId)
             .where('userId', isEqualTo: user.uid)
             .get();
-        doc.docs.forEach((element) {
+        for (var element in doc.docs) {
           element.reference.delete();
           print('deleted ${element.reference.id}');
-        });
+        }
       } else {
         await _firestore.collection('post').doc(post.postId).update({
           'likes': FieldValue.arrayUnion([uid])
@@ -197,10 +195,10 @@ class FirestoreMethods {
             .where('postId', isEqualTo: postId)
             .where('userId', isEqualTo: uid)
             .get();
-        doc.docs.forEach((element) {
+        for (var element in doc.docs) {
           element.reference.delete();
           print('deleted ${element.reference.id}');
-        });
+        }
         ShowSnackBar('Many congragulation pot deleted', context);
       } else {
         ShowSnackBar('You are not allow to delete', context);
@@ -236,10 +234,10 @@ class FirestoreMethods {
             .where('type', isEqualTo: 'follow')
             .where('userId', isEqualTo: currentUser.uid)
             .get();
-        doc.docs.forEach((element) {
+        for (var element in doc.docs) {
           element.reference.delete();
           print('deleted ${element.reference.id}');
-        });
+        }
       } else {
         await _firestore.collection('user').doc(followId).update({
           'followers': FieldValue.arrayUnion([currentUser.uid])

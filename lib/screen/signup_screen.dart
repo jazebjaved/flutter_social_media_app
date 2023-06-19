@@ -3,6 +3,7 @@ import 'package:first_app/screen/login_screen.dart';
 import 'package:first_app/widgets/text_field_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -43,10 +44,22 @@ class _SignUpState extends State<SignUp> {
   }
 
   void selectImage() async {
-    Uint8List? img = await pickImage(ImageSource.gallery);
+    Uint8List img2 = await pickImage(ImageSource.gallery);
+    Uint8List img = await testComporessList(img2);
+
     setState(() {
       _image = img;
     });
+  }
+
+  Future<Uint8List> testComporessList(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      quality: 20,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
   }
 
   void signUpUser() async {
@@ -92,7 +105,7 @@ class _SignUpState extends State<SignUp> {
       children: [
         Expanded(
           child: Scaffold(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).primaryColor,
               body: SafeArea(
                 child: SingleChildScrollView(
                   child: Column(
@@ -103,7 +116,7 @@ class _SignUpState extends State<SignUp> {
                       // ),
 
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 35),
+                        padding: const EdgeInsets.symmetric(horizontal: 35),
                         child: Wrap(
                           runSpacing: 15,
                           children: [
@@ -138,7 +151,6 @@ class _SignUpState extends State<SignUp> {
                                       onPressed: selectImage,
                                       icon: const Icon(
                                         Icons.add_a_photo_outlined,
-                                        color: Colors.red,
                                       ),
                                     ),
                                   ),
@@ -150,7 +162,7 @@ class _SignUpState extends State<SignUp> {
                               textEditingController: _emailController,
                               textInputType: TextInputType.emailAddress,
                               hintText: 'Email ID',
-                              iconType: Icon(Icons.email_outlined),
+                              iconType: const Icon(Icons.email_outlined),
                             ),
 
                             TextFieldInput(
@@ -159,7 +171,6 @@ class _SignUpState extends State<SignUp> {
                               hintText: 'Username',
                               iconType: const Icon(
                                 Icons.verified_user_outlined,
-                                color: Colors.red,
                               ),
                             ),
 
@@ -176,7 +187,7 @@ class _SignUpState extends State<SignUp> {
                             TextField(
                               controller:
                                   dateinput, //editing controller of this TextField
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   icon: Icon(Icons
                                       .calendar_today), //icon of text field
                                   labelText:
@@ -216,7 +227,7 @@ class _SignUpState extends State<SignUp> {
                               textEditingController: _bioController,
                               textInputType: TextInputType.multiline,
                               hintText: 'Bio',
-                              iconType: Icon(Icons.content_copy),
+                              iconType: const Icon(Icons.content_copy),
                             ),
                             TextFieldInput(
                               textEditingController: _hobbyController,
@@ -235,11 +246,11 @@ class _SignUpState extends State<SignUp> {
                             const SizedBox(
                               height: 60,
                             ),
-                            Container(
+                            SizedBox(
                               width: double.infinity,
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                    padding: EdgeInsets.all(13),
+                                    padding: const EdgeInsets.all(13),
                                     backgroundColor:
                                         Theme.of(context).colorScheme.primary,
                                     shape: RoundedRectangleBorder(
@@ -248,16 +259,16 @@ class _SignUpState extends State<SignUp> {
                                 onPressed: signUpUser,
                                 onHover: (value) {},
                                 child: isLoading
-                                    ? const Center(
+                                    ? Center(
                                         child: CircularProgressIndicator(
-                                          color: Colors.white,
+                                          color: Theme.of(context).primaryColor,
                                         ),
                                       )
-                                    : const Text(
+                                    : Text(
                                         'Register',
                                         style: TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 255, 255, 255),
+                                            color:
+                                                Theme.of(context).primaryColor,
                                             fontSize: 21,
                                             fontWeight: FontWeight.w500),
                                       ),
@@ -275,6 +286,7 @@ class _SignUpState extends State<SignUp> {
                                     width: 5,
                                   ),
                                   InkWell(
+                                    onTap: navigateToLogin,
                                     child: Text(
                                       'Login',
                                       style: TextStyle(
@@ -283,7 +295,6 @@ class _SignUpState extends State<SignUp> {
                                             .primary,
                                       ),
                                     ),
-                                    onTap: navigateToLogin,
                                   )
                                 ],
                               ),

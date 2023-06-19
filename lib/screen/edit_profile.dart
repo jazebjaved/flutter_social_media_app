@@ -1,6 +1,7 @@
 import 'package:first_app/widgets/text_field_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../misc/utils.dart';
@@ -20,10 +21,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool isLoading = false;
 
   void selectImage() async {
-    Uint8List? img = await pickImage(ImageSource.gallery);
+    Uint8List img2 = await pickImage(ImageSource.gallery);
+    Uint8List img = await testComporessList(img2);
     setState(() {
       _image = img;
     });
+  }
+
+  Future<Uint8List> testComporessList(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      quality: 20,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
   }
 
   @override
@@ -120,7 +132,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             textEditingController: emailController,
                             textInputType: TextInputType.emailAddress,
                             hintText: 'Email ID',
-                            iconType: Icon(Icons.email_outlined),
+                            iconType: const Icon(Icons.email_outlined),
                           ),
                           const SizedBox(
                             height: 10,
@@ -129,7 +141,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             textEditingController: usernameController,
                             textInputType: TextInputType.text,
                             hintText: 'Username',
-                            iconType: Icon(Icons.verified_user_outlined),
+                            iconType: const Icon(Icons.verified_user_outlined),
                           ),
                           const SizedBox(
                             height: 10,
@@ -138,16 +150,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             textEditingController: bioController,
                             textInputType: TextInputType.multiline,
                             hintText: 'Bio',
-                            iconType: Icon(Icons.content_copy),
+                            iconType: const Icon(Icons.content_copy),
                           ),
                           const SizedBox(
                             height: 25,
                           ),
-                          Container(
+                          SizedBox(
                             width: double.infinity,
                             child: TextButton(
                               style: TextButton.styleFrom(
-                                  padding: EdgeInsets.all(13),
+                                  padding: const EdgeInsets.all(13),
                                   backgroundColor:
                                       Theme.of(context).colorScheme.primary,
                                   shape: RoundedRectangleBorder(

@@ -62,7 +62,7 @@ class _commentsScreenState extends State<commentsScreen> {
                     );
                   }
                   return ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: snapshots.data!.docs.length,
                     itemBuilder: ((context, index) => commentCard(
@@ -103,7 +103,7 @@ class _commentsScreenState extends State<commentsScreen> {
                       onTap: () {},
                       controller: _commentController,
                       keyboardType: TextInputType.multiline,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           hintText: 'type Comment', border: InputBorder.none),
                     ),
                   ),
@@ -119,7 +119,7 @@ class _commentsScreenState extends State<commentsScreen> {
                           _commentController.text = "";
                         });
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.send_outlined,
                         color: Colors.white,
                         size: 22,

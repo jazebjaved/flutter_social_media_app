@@ -1,6 +1,4 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:first_app/misc/global_variable.dart';
 import 'package:first_app/resources/chatApi.dart';
 import 'package:first_app/screen/add_post_screen.dart';
 import 'package:first_app/screen/notification_feed_screen.dart';
@@ -36,6 +34,9 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    ChatApi().getFirebaseMessagingToken();
+    Provider.of<UserProvider>(context, listen: false).refreshUser();
   }
 
   @override
@@ -67,32 +68,33 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
                     const TabItem(icon: Icons.search, title: ' Friends'),
                     const TabItem(icon: Icons.add, title: 'Add'),
                     TabItem(
-                        icon: Consumer<NotifyFeedCountProvider>(
-                          builder: (context, count, child) {
-                            return Container(
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.all(0.0),
-                              child: badges.Badge(
-                                showBadge: count.count == 0 ? false : true,
-                                badgeStyle: badges.BadgeStyle(
-                                    badgeColor:
-                                        Theme.of(context).colorScheme.primary),
-                                badgeContent: Text(
-                                  count.count.toString(),
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                                child: Icon(
-                                  Icons.notifications_none,
-                                  size: 28,
-                                  color: _currentindex == 3
-                                      ? Theme.of(context).primaryColor
-                                      : Theme.of(context).colorScheme.primary,
-                                ),
+                      icon: Consumer<NotifyFeedCountProvider>(
+                        builder: (context, count, child) {
+                          return Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(0.0),
+                            child: badges.Badge(
+                              showBadge: count.count == 0 ? false : true,
+                              badgeStyle: badges.BadgeStyle(
+                                  badgeColor:
+                                      Theme.of(context).colorScheme.primary),
+                              badgeContent: Text(
+                                count.count.toString(),
+                                style: const TextStyle(color: Colors.white),
                               ),
-                            );
-                          },
-                        ),
-                        title: 'Notification'),
+                              child: Icon(
+                                Icons.notifications_none,
+                                size: 28,
+                                color: _currentindex == 3
+                                    ? Theme.of(context).primaryColor
+                                    : Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      title: 'Updates',
+                    ),
                     TabItem(
                       icon: url == null
                           ? const SizedBox

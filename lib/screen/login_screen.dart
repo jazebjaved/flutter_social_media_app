@@ -5,8 +5,6 @@ import 'package:first_app/widgets/text_field_input.dart';
 import 'package:flutter/material.dart';
 
 import '../responsive/mobile_screen_layout.dart';
-import '../responsive/responsive_layout.dart';
-import '../responsive/web_screen_layout.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -37,10 +35,7 @@ class _LoginState extends State<Login> {
     if (res == 'success') {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const ResponsiveLayout(
-            webScreenLayout: WebScreenLayout(),
-            mobileScreenLayout: MobileScreenLayout(),
-          ),
+          builder: (context) => const MobileScreenLayout(),
         ),
       );
     } else {
@@ -62,7 +57,7 @@ class _LoginState extends State<Login> {
       children: [
         Expanded(
           child: Scaffold(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).primaryColor,
               body: SafeArea(
                 child: SingleChildScrollView(
                   child: Column(
@@ -73,7 +68,7 @@ class _LoginState extends State<Login> {
                         height: 350,
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 35),
+                        padding: const EdgeInsets.symmetric(horizontal: 35),
                         child: Column(
                           children: [
                             const Align(
@@ -81,10 +76,10 @@ class _LoginState extends State<Login> {
                               child: Text(
                                 'Login Now',
                                 style: TextStyle(
-                                    fontSize: 33,
-                                    fontFamily: "Poppins-Regular",
-                                    fontWeight: FontWeight.w600,
-                                    color: Color.fromARGB(213, 45, 44, 44)),
+                                  fontSize: 33,
+                                  fontFamily: "Poppins-Regular",
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                             const SizedBox(
@@ -94,7 +89,7 @@ class _LoginState extends State<Login> {
                               textEditingController: _emailController,
                               textInputType: TextInputType.emailAddress,
                               hintText: 'Email ID',
-                              iconType: Icon(Icons.email_outlined),
+                              iconType: const Icon(Icons.email_outlined),
                             ),
                             const SizedBox(
                               height: 30,
@@ -109,7 +104,7 @@ class _LoginState extends State<Login> {
                             const SizedBox(
                               height: 12,
                             ),
-                            const Align(
+                            Align(
                               alignment: Alignment.topRight,
                               child: Text(
                                 'Forgot Password?',
@@ -117,18 +112,18 @@ class _LoginState extends State<Login> {
                                   fontSize: 17,
                                   fontFamily: "Poppins-Regular",
                                   fontWeight: FontWeight.w600,
-                                  color: Color.fromARGB(255, 238, 15, 56),
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                             ),
                             const SizedBox(
                               height: 30,
                             ),
-                            Container(
+                            SizedBox(
                               width: double.infinity,
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                    padding: EdgeInsets.all(13),
+                                    padding: const EdgeInsets.all(13),
                                     backgroundColor:
                                         Theme.of(context).colorScheme.primary,
                                     shape: RoundedRectangleBorder(
@@ -137,16 +132,16 @@ class _LoginState extends State<Login> {
                                 onPressed: LoginUser,
                                 onHover: (value) {},
                                 child: _isloading
-                                    ? const Center(
+                                    ? Center(
                                         child: CircularProgressIndicator(
-                                          color: Colors.white,
+                                          color: Theme.of(context).primaryColor,
                                         ),
                                       )
-                                    : const Text(
+                                    : Text(
                                         'Login',
                                         style: TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 255, 255, 255),
+                                            color:
+                                                Theme.of(context).primaryColor,
                                             fontSize: 21,
                                             fontWeight: FontWeight.w500),
                                       ),
@@ -166,6 +161,7 @@ class _LoginState extends State<Login> {
                                     width: 5,
                                   ),
                                   InkWell(
+                                    onTap: NavigateToSignUp,
                                     child: Text(
                                       'Register',
                                       style: TextStyle(
@@ -174,7 +170,6 @@ class _LoginState extends State<Login> {
                                             .primary,
                                       ),
                                     ),
-                                    onTap: NavigateToSignUp,
                                   )
                                 ],
                               ),

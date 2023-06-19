@@ -24,8 +24,8 @@ class MyThemes {
     fontFamily: 'Poppins-Regular',
     scaffoldBackgroundColor: Colors.black,
     primaryColor: Colors.grey[900],
-    colorScheme: ColorScheme.dark(primary: Color(0xff03dac6)),
-    iconTheme: IconThemeData(
+    colorScheme: const ColorScheme.dark(primary: Color(0xff03dac6)),
+    iconTheme: const IconThemeData(
       color: Color(0xff03dac6),
     ),
     cardTheme: CardTheme(color: Colors.grey[900]),
@@ -33,12 +33,12 @@ class MyThemes {
 
   static final lightTheme = ThemeData(
     fontFamily: 'Poppins-Regular',
-    scaffoldBackgroundColor: Color.fromARGB(210, 255, 255, 255),
+    scaffoldBackgroundColor: const Color.fromARGB(210, 255, 255, 255),
     primaryColor: Colors.white,
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
       primary: Color(0xFFEE0F38),
     ),
-    iconTheme: IconThemeData(color: Color(0xFFEE0F38)),
+    iconTheme: const IconThemeData(color: Color(0xFFEE0F38)),
     // iconButtonTheme: IconButtonThemeData(
     //   style: ButtonStyle(
     //       foregroundColor: MaterialStateProperty.all<Color>(

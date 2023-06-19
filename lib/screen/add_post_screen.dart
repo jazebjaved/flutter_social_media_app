@@ -1,15 +1,13 @@
 import 'package:first_app/misc/utils.dart';
 import 'package:first_app/provider/user_provider.dart';
 import 'package:first_app/resources/firestore_method.dart';
+import 'package:first_app/responsive/mobile_screen_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart' as UserModel;
-import '../widgets/change_theme_widget_button.dart';
-import '../widgets/my_drawer_header.dart';
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({super.key});
@@ -27,23 +25,27 @@ class _AddPostScreenState extends State<AddPostScreen> {
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: Text('Select Option'),
+            title: const Text('Select Option'),
             children: [
               SimpleDialogOption(
-                child: Text('Take photo'),
+                child: const Text('Take photo'),
                 onPressed: () async {
                   Navigator.of(context).pop();
-                  Uint8List file = await pickImage(ImageSource.camera);
+                  Uint8List file2 = await pickImage(ImageSource.camera);
+                  Uint8List file = await testComporessList(file2);
+
                   setState(() {
                     _file = file;
                   });
                 },
               ),
               SimpleDialogOption(
-                child: Text('Choose from Gallery'),
+                child: const Text('Choose from Gallery'),
                 onPressed: () async {
                   Navigator.of(context).pop();
-                  Uint8List file = await pickImage(ImageSource.gallery);
+                  Uint8List file2 = await pickImage(ImageSource.gallery);
+                  Uint8List file = await testComporessList(file2);
+
                   setState(() {
                     _file = file;
                   });
@@ -58,6 +60,16 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ],
           );
         });
+  }
+
+  Future<Uint8List> testComporessList(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      quality: 20,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
   }
 
   creatPost(
@@ -79,7 +91,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
       if (res == "success") {
         setState(() {
           ShowSnackBar('Posted', context);
-          Navigator.of(context).pop();
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const MobileScreenLayout()));
           _isLoading = false;
         });
       } else {
@@ -149,6 +162,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           ),
                     child: _file != null
                         ? Align(
+                            alignment: Alignment.topCenter,
                             child: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -159,14 +173,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                 Icons.cancel_outlined,
                               ),
                             ),
-                            alignment: Alignment.topCenter,
                           )
                         : Center(
                             child: IconButton(
                               onPressed: () {
                                 _selectImage(context);
                               },
-                              icon: Icon(Icons.upload_file_outlined),
+                              icon: const Icon(Icons.upload_file_outlined),
                               iconSize: 30,
                               color: Colors.white,
                             ),
@@ -206,7 +219,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           TextButton(
                             style: TextButton.styleFrom(
                                 backgroundColor: _file == null
-                                    ? Color.fromARGB(58, 238, 15, 56)
+                                    ? const Color.fromARGB(58, 238, 15, 56)
                                     : Theme.of(context).colorScheme.primary,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 36, vertical: 16)),

@@ -1,14 +1,11 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:first_app/misc/utils.dart';
-import 'package:first_app/models/user.dart';
 import 'package:first_app/resources/storage_method.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +81,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
                               return ListView.builder(
                                   reverse: true,
                                   itemCount: _list.length,
-                                  padding: EdgeInsets.only(top: 18),
+                                  padding: const EdgeInsets.only(top: 18),
                                   physics: const BouncingScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     return ConversationCard(
@@ -135,7 +132,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
@@ -165,6 +162,16 @@ class _ChattingScreenState extends State<ChattingScreen> {
     );
   }
 
+  Future<Uint8List> testComporessList(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      quality: 20,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
+  }
+
   Widget _chatInput(BuildContext context) {
     final currentUser =
         Provider.of<UserProvider>(context, listen: false).getUser;
@@ -185,7 +192,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
                         _showEmoji = !_showEmoji;
                       });
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.emoji_emotions_outlined,
                       size: 26,
                     ),
@@ -193,34 +200,39 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   Expanded(
                       child: TextField(
                     onTap: () {
-                      if (_showEmoji)
+                      if (_showEmoji) {
                         setState(() {
                           _showEmoji = !_showEmoji;
                         });
+                      }
                     },
                     controller: _chattingController,
                     keyboardType: TextInputType.multiline,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         hintText: 'type something', border: InputBorder.none),
                   )),
                   IconButton(
                     onPressed: () async {
-                      Uint8List file = await pickImage(ImageSource.gallery);
+                      Uint8List file2 = await pickImage(ImageSource.gallery);
+                      Uint8List file = await testComporessList(file2);
+
                       await StorageMethods()
                           .sendChatImage(widget.user, file, currentUser!);
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.image_outlined,
                       size: 26,
                     ),
                   ),
                   IconButton(
                     onPressed: () async {
-                      Uint8List file = await pickImage(ImageSource.camera);
+                      Uint8List file2 = await pickImage(ImageSource.camera);
+                      Uint8List file = await testComporessList(file2);
+
                       await StorageMethods()
                           .sendChatImage(widget.user, file, currentUser!);
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.camera_alt_outlined,
                       size: 26,
                     ),
@@ -243,7 +255,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   _chattingController.text = "";
                 }
               },
-              child: Icon(
+              child: const Icon(
                 Icons.send_outlined,
                 size: 25,
                 color: Colors.white,

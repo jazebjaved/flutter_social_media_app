@@ -28,7 +28,7 @@ class TextFieldInput extends StatelessWidget {
       obscureText: isPass,
       decoration: InputDecoration(
         icon: Padding(
-          padding: EdgeInsets.all(1),
+          padding: const EdgeInsets.all(1),
           child: iconType,
         ),
         hintText: hintText,

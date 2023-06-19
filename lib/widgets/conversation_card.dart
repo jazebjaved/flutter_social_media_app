@@ -1,11 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_app/resources/chatApi.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../misc/data_utils.dart';
 import '../models/message.dart';
-import '../provider/theme_provider.dart';
 
 class ConversationCard extends StatelessWidget {
   final Message messages;
@@ -34,7 +32,7 @@ class ConversationCard extends StatelessWidget {
             ),
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                   bottomLeft: Radius.circular(30),
@@ -78,11 +76,11 @@ class ConversationCard extends StatelessWidget {
                   DateUtil.getFormattedTime(
                       context: context, time: messages.sent),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
                 if (messages.read.isNotEmpty)
-                  Icon(
+                  const Icon(
                     Icons.done_all_outlined,
                   ),
               ],
@@ -108,11 +106,11 @@ class ConversationCard extends StatelessWidget {
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.75,
             ),
-            margin: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(
               horizontal: 10,
               vertical: 10,
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: Color.fromARGB(65, 158, 158, 158),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),

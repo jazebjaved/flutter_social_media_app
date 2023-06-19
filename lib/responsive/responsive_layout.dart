@@ -1,12 +1,6 @@
-import 'package:first_app/provider/comments_provider.dart';
-import 'package:first_app/provider/user_provider.dart';
-import 'package:first_app/resources/chatApi.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../misc/global_variable.dart';
-import '../provider/notification_feed_provider.dart';
-import '../provider/theme_provider.dart';
 
 class ResponsiveLayout extends StatefulWidget {
   final Widget webScreenLayout;
@@ -24,16 +18,16 @@ class ResponsiveLayout extends StatefulWidget {
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   @override
   void initState() {
-    ChatApi().getFirebaseMessagingToken();
-    Provider.of<UserProvider>(context, listen: false).refreshUser();
+    // ChatApi().getFirebaseMessagingToken();
+    // Provider.of<UserProvider>(context, listen: false).refreshUser();
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<NotifyFeedCountProvider>(context, listen: true)
-        .getNotifyFeedList();
+    // Provider.of<NotifyFeedCountProvider>(context, listen: true)
+    //     .getNotifyFeedList();
 
     return LayoutBuilder(
       builder: (context, Constraints) {

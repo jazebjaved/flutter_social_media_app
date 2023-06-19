@@ -2,11 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_app/screen/profile_screen.dart';
 import 'package:first_app/widgets/add_friend_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:provider/provider.dart';
 import '../models/user.dart' as UserModel;
-import '../provider/user_provider.dart';
 import '../widgets/friend_suggestion.dart';
 import '../widgets/my_drawer_header.dart';
 
@@ -40,7 +36,7 @@ class _SearchScreenState extends State<SearchScreen> {
       appBar: AppBar(
         title: const Text('Find Friends'),
       ),
-      drawer: MyHeaderDrawer(),
+      drawer: const MyHeaderDrawer(),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Column(children: [

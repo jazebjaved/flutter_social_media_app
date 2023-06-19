@@ -1,15 +1,8 @@
-import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_app/models/notification_feed.dart';
-import 'package:first_app/models/post.dart';
-import 'package:first_app/provider/notification_feed_provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/rxdart.dart';
 import '../models/user.dart' as UserModel;
 
 import '../provider/user_provider.dart';
@@ -58,12 +51,12 @@ class NotificationFeedScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Latest Notifications',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
         ),
       ),
-      drawer: MyHeaderDrawer(),
+      drawer: const MyHeaderDrawer(),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: StreamBuilder(
@@ -86,7 +79,7 @@ class NotificationFeedScreen extends StatelessWidget {
 
             notifyList = data
                     ?.map((e) =>
-                        NotifyFeed.fromJson(e.data() as Map<String, dynamic>))
+                        NotifyFeed.fromJson(e.data()))
                     .toList() ??
                 [];
 

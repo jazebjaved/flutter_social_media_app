@@ -8,7 +8,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_app/models/message.dart';
 import 'package:http/http.dart';
 import '../models/user.dart' as UserModel;
-import '../screen/chat_screen.dart';
 
 class ChatApi {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -123,7 +122,6 @@ class ChatApi {
               type == Type.text ? msg : 'image',
               currentUser,
             ));
-    ;
   }
 
   Future<void> updateMessageReadStatus(Message message) async {

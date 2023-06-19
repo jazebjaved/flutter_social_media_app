@@ -1,17 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:first_app/provider/comments_provider.dart';
 import 'package:first_app/resources/firestore_method.dart';
 import 'package:first_app/screen/commens_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart' as UserModel;
 
-import '../misc/utils.dart';
 import '../models/post.dart';
 import '../provider/theme_provider.dart';
 import '../provider/user_provider.dart';
@@ -262,7 +257,7 @@ class _postCardState extends State<postCard> {
                     Text(postLen.toString())
                   ],
                 ),
-                Spacer(),
+                const Spacer(),
                 IconButton(
                   onPressed: () {},
                   icon: const Icon(Icons.save_outlined),

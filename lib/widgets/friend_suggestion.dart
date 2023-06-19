@@ -1,5 +1,3 @@
-import 'package:async/async.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_app/resources/chatApi.dart';
 import 'package:first_app/widgets/add_friend_card.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../provider/theme_provider.dart';
 import '../provider/user_provider.dart';
-import '../resources/firestore_method.dart';
 import '../models/user.dart' as UserModel;
-import 'chat_user_card.dart';
 
 class FriendSuggestion extends StatefulWidget {
   const FriendSuggestion({
@@ -70,8 +66,8 @@ class _FriendSuggestionState extends State<FriendSuggestion> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                SizedBox(height: 20.0),
-                Text('Find Friends',
+                const SizedBox(height: 20.0),
+                const Text('Find Friends',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 22)),
                 DefaultTabController(
@@ -83,9 +79,9 @@ class _FriendSuggestionState extends State<FriendSuggestion> {
                           Container(
                             child: TabBar(
                               indicatorColor: themeProvider.isDarkMode
-                                  ? Color(0xff03dac6)
-                                  : Color.fromARGB(255, 224, 45, 45),
-                              tabs: [
+                                  ? const Color(0xff03dac6)
+                                  : const Color.fromARGB(255, 224, 45, 45),
+                              tabs: const [
                                 Tab(text: 'Suggested for you'),
                                 Tab(text: 'Discover People'),
                               ],
@@ -93,7 +89,7 @@ class _FriendSuggestionState extends State<FriendSuggestion> {
                           ),
                           Container(
                               height: 400, //height of TabBarView
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   border: Border(
                                       top: BorderSide(
                                           color: Colors.grey, width: 0.5))),

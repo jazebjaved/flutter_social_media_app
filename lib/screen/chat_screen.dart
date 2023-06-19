@@ -1,10 +1,8 @@
-import 'dart:ui';
 
 import 'package:first_app/resources/chatApi.dart';
 import 'package:first_app/widgets/chat_user_card.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart' as UserModel;
-import '../widgets/change_theme_widget_button.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -14,7 +12,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  TextEditingController _chatController = TextEditingController();
+  final TextEditingController _chatController = TextEditingController();
   List<UserModel.User> _list = [];
 
   bool _isShowUser = false;
@@ -81,8 +79,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     _list =
                         data?.map((e) => UserModel.User.fromSnap(e)).toList() ??
                             [];
+
                     return ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: _list.length,
                       itemBuilder: (context, index) => ChatUserCard(

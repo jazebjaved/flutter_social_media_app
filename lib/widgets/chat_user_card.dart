@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +19,7 @@ class ChatUserCard extends StatelessWidget {
 
     int unreadMessageAmount = 0;
 
-    Message? _message;
+    Message? message;
 
     return StreamBuilder(
         stream: ChatApi().getLastMessage(user),
@@ -41,12 +39,11 @@ class ChatUserCard extends StatelessWidget {
                     final data = snapshot.data?.docs;
                     final unreadMessageAmount = snapshot2.data?.docs.length;
 
-                    final _list =
+                    final list =
                         data?.map((e) => Message.fromJson(e.data())).toList() ??
                             [];
-
-                    if (_list.isNotEmpty) _message = _list[0];
-
+                    // _list.sort((a, b) => a.sent.compareTo(b.sent));
+                    if (list.isNotEmpty) message = list[0];
                     return Card(
                       elevation: 0,
                       margin: const EdgeInsets.symmetric(
@@ -87,9 +84,9 @@ class ChatUserCard extends StatelessWidget {
                                     height: 1,
                                   ),
                                   Text(
-                                    _message != null
-                                        ? _message!.type == Type.text
-                                            ? _message!.msg
+                                    message != null
+                                        ? message!.type == Type.text
+                                            ? message!.msg
                                             : 'Image 🖼️ '
                                         : user.bio,
                                   ),
@@ -99,11 +96,11 @@ class ChatUserCard extends StatelessWidget {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  if (_message?.sent != null)
+                                  if (message?.sent != null)
                                     Text(
                                       DateUtil.getFormattedTime(
                                           context: context,
-                                          time: _message!.sent),
+                                          time: message!.sent),
                                       style: const TextStyle(
                                         fontSize: 15,
                                       ),
@@ -111,8 +108,8 @@ class ChatUserCard extends StatelessWidget {
                                   const SizedBox(
                                     height: 1,
                                   ),
-                                  if (_message?.read == '' &&
-                                      ChatApi().user.uid != _message!.fromId)
+                                  if (message?.read == '' &&
+                                      ChatApi().user.uid != message!.fromId)
                                     CircleAvatar(
                                       backgroundColor:
                                           Theme.of(context).colorScheme.primary,

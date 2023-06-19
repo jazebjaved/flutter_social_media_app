@@ -1,10 +1,6 @@
-import 'package:first_app/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/theme_provider.dart';
 import '../provider/user_provider.dart';
 import '../screen/add_post_screen.dart';
 import '../models/user.dart' as UserModel;
@@ -42,18 +38,18 @@ class addPostCard extends StatelessWidget {
                 ),
                 Text(
                   "what's on your mind, ${user?.username}? ",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
             const SizedBox(
               height: 15,
             ),
-            Container(
+            SizedBox(
               width: double.infinity,
               child: TextButton(
                 style: TextButton.styleFrom(
-                    padding: EdgeInsets.all(11),
+                    padding: const EdgeInsets.all(11),
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12))),

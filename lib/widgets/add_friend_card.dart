@@ -41,7 +41,7 @@ class AddFriendCard extends StatelessWidget {
                     Text(
                       snap.bio,
                       style:
-                          TextStyle(color: Color.fromARGB(255, 123, 121, 121)),
+                          const TextStyle(color: Color.fromARGB(255, 123, 121, 121)),
                     ),
                   ],
                 ),

@@ -8,16 +8,12 @@ import 'package:first_app/resources/auth.method.dart';
 import 'package:first_app/resources/firestore_method.dart';
 import 'package:first_app/screen/edit_profile.dart';
 import 'package:first_app/screen/login_screen.dart';
-import 'package:first_app/widgets/post_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart' as UserModel;
 import '../provider/theme_provider.dart';
 import '../resources/chatApi.dart';
-import '../widgets/change_theme_widget_button.dart';
 import '../widgets/my_drawer_header.dart';
 import 'chatting_screen.dart';
 
@@ -100,8 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       String title,
       String subtitle,
     ) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 0),
+      return SizedBox(
+        width: 120,
         child: Column(
           children: [
             CircleAvatar(
@@ -120,6 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Text(
               subtitle,
+              softWrap: false,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
           ],
@@ -137,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           )
         : Scaffold(
             appBar: AppBar(
-              title: Text(
+              title: const Text(
                 'Profile',
               ),
               automaticallyImplyLeading: true,
@@ -155,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
               ],
             ),
-            drawer: MyHeaderDrawer(),
+            drawer: const MyHeaderDrawer(),
             body: SingleChildScrollView(
               child: StreamBuilder(
                   stream: ChatApi().updateFollowers(widget.uid),
@@ -205,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Center(
                                   child: Text(
                                     _userList.username,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 26,
                                         fontWeight: FontWeight.w600),
                                   ),
@@ -213,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Center(
                                   child: Text(
                                     _userList.bio,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
                                     ),
                                   ),
@@ -234,11 +231,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           children: [
                                             Text(
                                               postLen.toString(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 24,
                                                   fontWeight: FontWeight.w800),
                                             ),
-                                            Text(
+                                            const Text(
                                               'Posts',
                                             )
                                           ],
@@ -250,11 +247,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           children: [
                                             Text(
                                               following.toString(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 24,
                                                   fontWeight: FontWeight.w800),
                                             ),
-                                            Text(
+                                            const Text(
                                               'Followings',
                                             )
                                           ],
@@ -266,11 +263,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           children: [
                                             Text(
                                               followers.toString(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 24,
                                                   fontWeight: FontWeight.w800),
                                             ),
-                                            Text(
+                                            const Text(
                                               'Followers',
                                             )
                                           ],
@@ -396,7 +393,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 ? Theme.of(context)
                                                     .colorScheme
                                                     .primary
-                                                : Color.fromARGB(180, 0, 0, 0),
+                                                : const Color.fromARGB(
+                                                    180, 0, 0, 0),
                                         radius: 28,
                                         child: IconButton(
                                           onPressed: () {
@@ -423,44 +421,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(
                             height: 20,
                           ),
-                          Card(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 25, horizontal: 5),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                          SizedBox(
+                            height: 200,
+                            child: Card(
+                              child: ListView(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                physics: const ScrollPhysics(),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 22, vertical: 30),
                                 children: [
-                                  PersonalDetailCard(
-                                      const Icon(
-                                        Icons.school_outlined,
-                                        size: 32,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      PersonalDetailCard(
+                                          const Icon(
+                                            Icons.school_outlined,
+                                            size: 32,
+                                          ),
+                                          'Field of Study',
+                                          _userList.study),
+                                      PersonalDetailCard(
+                                        const Icon(
+                                          Icons.calendar_today,
+                                          size: 32,
+                                        ),
+                                        'Date of Birth',
+                                        DateFormat.MMMd('en_US').format(
+                                            DateTime.parse(_userList.dob)),
                                       ),
-                                      'Field of Study',
-                                      _userList.study),
-                                  PersonalDetailCard(
-                                    const Icon(
-                                      Icons.calendar_today,
-                                      size: 32,
-                                    ),
-                                    'Date of Birth',
-                                    DateFormat.MMMd('en_US')
-                                        .format(DateTime.parse(_userList.dob)),
-                                  ),
-                                  PersonalDetailCard(
-                                      const Icon(
-                                        Icons.play_circle_outline,
-                                        size: 32,
-                                      ),
-                                      'Hobby',
-                                      _userList.hobby),
+                                      PersonalDetailCard(
+                                          const Icon(
+                                            Icons.play_circle_outline,
+                                            size: 32,
+                                          ),
+                                          'Hobby',
+                                          _userList.hobby),
+                                    ],
+                                  )
                                 ],
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 20,
                           ),
                           TextButton(
                             style: TextButton.styleFrom(
