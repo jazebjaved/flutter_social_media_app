@@ -9,6 +9,7 @@ class Post {
   final String postPicUrl;
   final String photoUrl;
   final likes;
+  bool? isVideo = false;
   Post({
     required this.description,
     required this.username,
@@ -18,6 +19,7 @@ class Post {
     required this.postPicUrl,
     required this.photoUrl,
     required this.likes,
+    required this.isVideo,
   });
 
   Map<String, dynamic> toJson() => {
@@ -29,19 +31,20 @@ class Post {
         'postPicUrl': postPicUrl,
         'photoUrl': photoUrl,
         'likes': likes,
+        'isVideo': isVideo,
       };
 
   static Post fromJson(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
     return Post(
-      description: snapshot['description'],
-      username: snapshot['username'],
-      uid: snapshot['uid'],
-      postId: snapshot['postId'],
-      datePublished: snapshot['datePublished'],
-      postPicUrl: snapshot['postPicUrl'],
-      photoUrl: snapshot['photoUrl'],
-      likes: snapshot['likes'],
-    );
+        description: snapshot['description'],
+        username: snapshot['username'],
+        uid: snapshot['uid'],
+        postId: snapshot['postId'],
+        datePublished: snapshot['datePublished'],
+        postPicUrl: snapshot['postPicUrl'],
+        photoUrl: snapshot['photoUrl'],
+        likes: snapshot['likes'],
+        isVideo: snapshot['isVideo']);
   }
 }

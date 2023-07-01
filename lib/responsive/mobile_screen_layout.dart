@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:first_app/resources/chatApi.dart';
 import 'package:first_app/screen/add_post_screen.dart';
@@ -99,8 +100,20 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
                       icon: url == null
                           ? const SizedBox
                               .shrink() // If it's missing, display an empty box
-                          : CircleAvatar(
-                              radius: 16, backgroundImage: NetworkImage(url)),
+                          : ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: url,
+                                width: 34,
+                                height: 34,
+                                placeholder: (context, url) => const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: CircularProgressIndicator(),
+                                ),
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
+                            ),
                       title: 'Profile',
                     ),
                   ],

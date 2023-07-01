@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:first_app/misc/utils.dart';
 import 'package:first_app/provider/user_provider.dart';
 import 'package:first_app/resources/firestore_method.dart';
@@ -6,7 +8,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:provider/provider.dart';
+import 'package:video_compress/video_compress.dart';
+import 'package:video_player/video_player.dart';
 import '../models/user.dart' as UserModel;
 
 class AddPostScreen extends StatefulWidget {
@@ -18,6 +23,11 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
+  String? mediaType;
+  VideoPlayerController? _controller;
+  bool isVideo = false;
+
+  final picker = ImagePicker();
   final TextEditingController _descriptionController = TextEditingController();
   bool _isLoading = false;
   _selectImage(BuildContext context) async {
@@ -31,8 +41,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 child: const Text('Take photo'),
                 onPressed: () async {
                   Navigator.of(context).pop();
-                  Uint8List file2 = await pickImage(ImageSource.camera);
-                  Uint8List file = await testComporessList(file2);
+                  XFile? file2 =
+                      await picker.pickImage(source: ImageSource.camera);
+                  final path = File(file2!.path);
+
+                  Uint8List file = await testCompressFile(path);
 
                   setState(() {
                     _file = file;
@@ -40,15 +53,66 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 },
               ),
               SimpleDialogOption(
-                child: const Text('Choose from Gallery'),
+                child: const Text('Pick an Image'),
                 onPressed: () async {
                   Navigator.of(context).pop();
-                  Uint8List file2 = await pickImage(ImageSource.gallery);
-                  Uint8List file = await testComporessList(file2);
+                  XFile? file2 =
+                      await picker.pickImage(source: ImageSource.gallery);
+                  final path = File(file2!.path);
+
+                  Uint8List file = await testCompressFile(path);
 
                   setState(() {
                     _file = file;
                   });
+                },
+              ),
+              SimpleDialogOption(
+                child: const Text('Pick a Video'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  XFile? file2 = await picker.pickVideo(
+                    source: ImageSource.gallery,
+                  );
+                  final path = File(file2!.path);
+                  print(path.length);
+
+                  //use to compress a video
+                  MediaInfo? mediaInfo = await VideoCompress.compressVideo(
+                    path.path,
+                    quality: VideoQuality.LowQuality,
+                    deleteOrigin: false, // It's false by default
+                  );
+
+                  // use to convert mediainfo file to File type
+                  File? fileType = mediaInfo!.file;
+
+                  // use to convert File type to UNIT8LIst type
+                  Uint8List file = fileType!.readAsBytesSync();
+
+                  // Uint8List? file = await VideoCompress.getByteThumbnail(
+                  //   path.path,
+                  //   quality: 50,
+                  // );
+                  print(file);
+
+                  final mimeType = lookupMimeType(path.path);
+                  final trimmed = mimeType!.split('/').first;
+                  print(trimmed);
+
+                  // final thumbnailFile = await VideoCompress.getFileThumbnail(
+                  //   path.path,
+                  //   quality: 50, // default(100)
+                  // );
+
+                  _controller = VideoPlayerController.file(fileType)
+                    ..initialize().then((_) {
+                      setState(() {});
+                      _controller!.play();
+                      mediaType = trimmed;
+                      _file = file;
+                      isVideo = true;
+                    });
                 },
               ),
               SimpleDialogOption(
@@ -62,13 +126,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
         });
   }
 
-  Future<Uint8List> testComporessList(Uint8List list) async {
-    var result = await FlutterImageCompress.compressWithList(
-      list,
-      quality: 20,
+  Future<Uint8List> testCompressFile(File file) async {
+    var result = await FlutterImageCompress.compressWithFile(
+      file.absolute.path,
+      quality: 25,
     );
-    print(list.length);
-    print(result.length);
+    print(file.lengthSync());
+    print(result!.length);
     return result;
   }
 
@@ -76,6 +140,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     String uid,
     String username,
     String profImage,
+    bool isVideo,
   ) async {
     setState(() {
       _isLoading = true;
@@ -87,6 +152,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
         profImage: profImage,
         username: username,
         file: _file!,
+        isVideo: isVideo,
       );
       if (res == "success") {
         setState(() {
@@ -114,6 +180,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     // TODO: implement dispose
     super.dispose();
     _descriptionController.dispose();
+    _controller?.dispose();
   }
 
   @override
@@ -146,45 +213,93 @@ class _AddPostScreenState extends State<AddPostScreen> {
               child: Column(
                 children: [
                   _isLoading ? const LinearProgressIndicator() : Container(),
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 25, vertical: 30),
-                    height: 250,
-                    decoration: _file != null
-                        ? BoxDecoration(
-                            image: DecorationImage(
-                              image: MemoryImage(_file!),
-                            ),
-                          )
-                        : BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                    child: _file != null
-                        ? Align(
-                            alignment: Alignment.topCenter,
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _file = null;
-                                });
-                              },
-                              icon: const Icon(
-                                Icons.cancel_outlined,
+                  mediaType == "video"
+                      ? Container(
+                          width: 200,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 25, vertical: 30),
+                          child: Column(
+                            children: [
+                              Stack(children: [
+                                AspectRatio(
+                                  aspectRatio: 12 / 15,
+                                  child: VideoPlayer(_controller!),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _file = null;
+                                        mediaType = null;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.cancel_outlined,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                              const SizedBox(
+                                height: 10,
                               ),
-                            ),
-                          )
-                        : Center(
-                            child: IconButton(
-                              onPressed: () {
-                                _selectImage(context);
-                              },
-                              icon: const Icon(Icons.upload_file_outlined),
-                              iconSize: 30,
-                              color: Colors.white,
-                            ),
+                              FloatingActionButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _controller!.value.isPlaying
+                                        ? _controller!.pause()
+                                        : _controller!.play();
+                                  });
+                                },
+                                child: Icon(
+                                  _controller!.value.isPlaying
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                ),
+                              ),
+                            ],
                           ),
-                  ),
+                        )
+                      : Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 25, vertical: 30),
+                          height: 250,
+                          decoration: _file != null
+                              ? BoxDecoration(
+                                  image: DecorationImage(
+                                    image: MemoryImage(_file!),
+                                  ),
+                                )
+                              : BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                          child: _file != null
+                              ? Align(
+                                  alignment: Alignment.topCenter,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _file = null;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.cancel_outlined,
+                                    ),
+                                  ),
+                                )
+                              : Center(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      _selectImage(context);
+                                    },
+                                    icon:
+                                        const Icon(Icons.upload_file_outlined),
+                                    iconSize: 30,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
                   Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 20,
@@ -229,6 +344,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                       user!.uid,
                                       user.username,
                                       user.photoUrl,
+                                      isVideo,
                                     ),
                             child: const Text(
                               'Post',

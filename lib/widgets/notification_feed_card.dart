@@ -45,9 +45,24 @@ class NotificationFeedCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  child: CircleAvatar(
-                      radius: 24,
-                      backgroundImage: NetworkImage(notifyFeed.userProfileImg)),
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: notifyFeed.userProfileImg,
+                      width: 48,
+                      height: 48,
+                      placeholder: (context, url) => const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
+                  ),
+                  // CircleAvatar(
+                  //     radius: 24,
+                  //     backgroundImage: NetworkImage(notifyFeed.userProfileImg),
+                  //     ),
                 ),
                 const SizedBox(
                   width: 8,
@@ -67,7 +82,8 @@ class NotificationFeedCard extends StatelessWidget {
                                   fontSize: 14,
                                   color: themeProvider.isDarkMode
                                       ? Colors.white70
-                                      : const Color.fromARGB(255, 123, 121, 121)),
+                                      : const Color.fromARGB(
+                                          255, 123, 121, 121)),
                             ),
                           if (notifyFeed.type == 'like')
                             TextSpan(
@@ -76,7 +92,8 @@ class NotificationFeedCard extends StatelessWidget {
                                   fontSize: 14,
                                   color: themeProvider.isDarkMode
                                       ? Colors.white70
-                                      : const Color.fromARGB(255, 123, 121, 121)),
+                                      : const Color.fromARGB(
+                                          255, 123, 121, 121)),
                             ),
                           if (notifyFeed.type == 'follow')
                             TextSpan(
@@ -85,7 +102,8 @@ class NotificationFeedCard extends StatelessWidget {
                                   fontSize: 14,
                                   color: themeProvider.isDarkMode
                                       ? Colors.white70
-                                      : const Color.fromARGB(255, 123, 121, 121)),
+                                      : const Color.fromARGB(
+                                          255, 123, 121, 121)),
                             ),
                         ])),
                     // Text(
@@ -117,9 +135,9 @@ class NotificationFeedCard extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       ),
                       errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                          const Icon(Icons.video_collection_outlined),
                     ),
-                  )
+                  ),
                 // TextButton(
                 //   onPressed: () => Navigator.of(context).push(
                 //     MaterialPageRoute(

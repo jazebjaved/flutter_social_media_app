@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:first_app/misc/utils.dart';
 import 'package:first_app/resources/storage_method.dart';
@@ -137,9 +138,18 @@ class _ChattingScreenState extends State<ChattingScreen> {
             color: Colors.white,
           ),
         ),
-        CircleAvatar(
-          radius: 22,
-          backgroundImage: NetworkImage(widget.user.photoUrl),
+        ClipOval(
+          child: CachedNetworkImage(
+            imageUrl: widget.user.photoUrl,
+            width: 44,
+            height: 44,
+            placeholder: (context, url) => const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(),
+            ),
+            fit: BoxFit.cover,
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
         ),
         const SizedBox(
           width: 12,
@@ -179,6 +189,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
       children: [
         Expanded(
           child: Card(
+            color: Theme.of(context).colorScheme.secondary,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             child: Padding(

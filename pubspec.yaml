@@ -55,6 +55,10 @@ dependencies:
   flutter_spinkit: ^5.1.0
   flutter_native_splash: ^2.2.19
   flutter_image_compress: ^2.0.3
+  mime: ^1.0.4
+  video_player: ^2.6.1
+  chewie: ^1.5.0
+  video_compress: ^3.1.0
 
 
 

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_app/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -62,9 +63,19 @@ class commentCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 17,
-                    backgroundImage: NetworkImage(snap['profPic']),
+                  ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: snap['profPic'],
+                      width: 40,
+                      height: 40,
+                      placeholder: (context, url) => const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
                   ),
                   const SizedBox(
                     width: 5,

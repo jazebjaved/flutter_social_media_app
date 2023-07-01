@@ -1,4 +1,4 @@
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../misc/data_utils.dart';
@@ -64,9 +64,19 @@ class ChatUserCard extends StatelessWidget {
                           ),
                           child: Row(
                             children: [
-                              CircleAvatar(
-                                radius: 25,
-                                backgroundImage: NetworkImage(user.photoUrl),
+                              ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: user.photoUrl,
+                                  width: 50,
+                                  height: 50,
+                                  placeholder: (context, url) => const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                ),
                               ),
                               const SizedBox(
                                 width: 12,

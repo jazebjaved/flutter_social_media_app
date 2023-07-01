@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:first_app/widgets/change_theme_widget_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +6,8 @@ import '../models/user.dart' as UserModel;
 
 import '../provider/theme_provider.dart';
 import '../provider/user_provider.dart';
+import '../resources/auth.method.dart';
+import '../screen/login_screen.dart';
 
 class MyHeaderDrawer extends StatefulWidget {
   const MyHeaderDrawer({super.key});
@@ -35,11 +38,18 @@ class _MyHeaderDrawerState extends State<MyHeaderDrawer> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
-                    height: 70,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(user!.photoUrl),
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                        imageUrl: user!.photoUrl,
+                        width: 75,
+                        height: 75,
+                        placeholder: (context, url) => const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                   ),
@@ -107,8 +117,11 @@ class _MyHeaderDrawerState extends State<MyHeaderDrawer> {
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                    onPressed: () {
-                      // Respond to button press
+                    onPressed: () async {
+                      await AuthMethods().LogOutUser();
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const Login())); // handle the press
                     },
                     icon: const Icon(
                       Icons.logout,

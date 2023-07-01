@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_app/misc/utils.dart';
@@ -14,12 +13,14 @@ class FirestoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<String> UploadPost(
-      {required String description,
-      required String uid,
-      required String profImage,
-      required String username,
-      required Uint8List file}) async {
+  Future<String> UploadPost({
+    required String description,
+    required String uid,
+    required String profImage,
+    required String username,
+    required Uint8List file,
+    required bool isVideo,
+  }) async {
     String res = 'some error occure';
     try {
       if (description.isNotEmpty) {
@@ -28,15 +29,15 @@ class FirestoreMethods {
 
         String postId = const Uuid().v1();
         Post post = Post(
-          description: description,
-          username: username,
-          uid: uid,
-          postId: postId,
-          datePublished: DateTime.now(),
-          postPicUrl: postPicUrl,
-          photoUrl: profImage,
-          likes: [],
-        );
+            description: description,
+            username: username,
+            uid: uid,
+            postId: postId,
+            datePublished: DateTime.now(),
+            postPicUrl: postPicUrl,
+            photoUrl: profImage,
+            likes: [],
+            isVideo: isVideo);
 
         await _firestore.collection('post').doc(postId).set(post.toJson());
         res = 'success';
@@ -167,7 +168,7 @@ class FirestoreMethods {
     try {
       if (_auth.currentUser!.uid == uid) {
         await _firestore.collection('post').doc(postId).delete();
-        ShowSnackBar('Many congragulation pot deleted', context);
+        ShowSnackBar('Post has been deleted', context);
       } else {
         ShowSnackBar('You are not allow to delete', context);
       }
@@ -199,7 +200,7 @@ class FirestoreMethods {
           element.reference.delete();
           print('deleted ${element.reference.id}');
         }
-        ShowSnackBar('Many congragulation pot deleted', context);
+        ShowSnackBar('Comment has been deleted', context);
       } else {
         ShowSnackBar('You are not allow to delete', context);
       }

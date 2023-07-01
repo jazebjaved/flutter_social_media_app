@@ -55,7 +55,7 @@ class _SignUpState extends State<SignUp> {
   Future<Uint8List> testComporessList(Uint8List list) async {
     var result = await FlutterImageCompress.compressWithList(
       list,
-      quality: 20,
+      quality: 25,
     );
     print(list.length);
     print(result.length);

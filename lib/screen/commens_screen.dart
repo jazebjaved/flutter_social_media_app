@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_app/resources/firestore_method.dart';
 import 'package:first_app/widgets/comment_card.dart';
@@ -85,6 +86,7 @@ class _commentsScreenState extends State<commentsScreen> {
       children: [
         Expanded(
           child: Card(
+            color: Theme.of(context).colorScheme.secondary,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             child: Padding(
@@ -93,9 +95,19 @@ class _commentsScreenState extends State<commentsScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 10, left: 5),
-                    child: CircleAvatar(
-                      maxRadius: 22,
-                      backgroundImage: NetworkImage(_user!.photoUrl),
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                        imageUrl: _user!.photoUrl,
+                        width: 44,
+                        height: 44,
+                        placeholder: (context, url) => const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
                     ),
                   ),
                   Expanded(

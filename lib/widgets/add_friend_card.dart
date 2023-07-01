@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart' as UserModel;
 import '../screen/profile_screen.dart';
@@ -20,9 +21,19 @@ class AddFriendCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundImage: NetworkImage(snap.photoUrl),
+                ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: snap.photoUrl,
+                    width: 48,
+                    height: 48,
+                    placeholder: (context, url) => const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
                 ),
                 const SizedBox(
                   width: 15,
@@ -40,8 +51,8 @@ class AddFriendCard extends StatelessWidget {
                     ),
                     Text(
                       snap.bio,
-                      style:
-                          const TextStyle(color: Color.fromARGB(255, 123, 121, 121)),
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 123, 121, 121)),
                     ),
                   ],
                 ),

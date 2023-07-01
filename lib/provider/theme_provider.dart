@@ -24,7 +24,10 @@ class MyThemes {
     fontFamily: 'Poppins-Regular',
     scaffoldBackgroundColor: Colors.black,
     primaryColor: Colors.grey[900],
-    colorScheme: const ColorScheme.dark(primary: Color(0xff03dac6)),
+    colorScheme: const ColorScheme.dark(
+      primary: Color(0xff03dac6),
+      secondary: Color(0xFF212121),
+    ),
     iconTheme: const IconThemeData(
       color: Color(0xff03dac6),
     ),
@@ -33,12 +36,12 @@ class MyThemes {
 
   static final lightTheme = ThemeData(
     fontFamily: 'Poppins-Regular',
-    scaffoldBackgroundColor: const Color.fromARGB(210, 255, 255, 255),
+    // scaffoldBackgroundColor: Color.fromARGB(193, 255, 255, 255),
     primaryColor: Colors.white,
     colorScheme: const ColorScheme.light(
-      primary: Color(0xFFEE0F38),
-    ),
+        primary: Color(0xFFEE0F38), secondary: Colors.white70),
     iconTheme: const IconThemeData(color: Color(0xFFEE0F38)),
+
     // iconButtonTheme: IconButtonThemeData(
     //   style: ButtonStyle(
     //       foregroundColor: MaterialStateProperty.all<Color>(

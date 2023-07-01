@@ -178,6 +178,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: 35,
                           ),
                           Card(
+                            elevation: 18,
+                            shadowColor: Theme.of(context).colorScheme.primary,
                             child: Column(
                               children: [
                                 const SizedBox(
@@ -188,10 +190,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     radius: 54,
                                     backgroundColor:
                                         Theme.of(context).colorScheme.primary,
-                                    child: CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: NetworkImage(
-                                        _userList.photoUrl,
+                                    child: ClipOval(
+                                      child: CachedNetworkImage(
+                                        imageUrl: _userList.photoUrl,
+                                        width: 100,
+                                        height: 100,
+                                        placeholder: (context, url) =>
+                                            const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        fit: BoxFit.cover,
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
                                       ),
                                     ),
                                   ),
@@ -424,6 +435,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           SizedBox(
                             height: 200,
                             child: Card(
+                              elevation: 18,
+                              shadowColor:
+                                  Theme.of(context).colorScheme.primary,
                               child: ListView(
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
@@ -497,22 +511,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   shrinkWrap: true,
                                   itemCount: snapshot.data!.docs.length,
                                   itemBuilder: (context, index) {
-                                    return CachedNetworkImage(
-                                      imageUrl: snapshot.data!.docs[index]
-                                          ['postPicUrl'],
-                                      progressIndicatorBuilder: (context, url,
-                                              downloadProgress) =>
-                                          CircularProgressIndicator(
-                                              value: downloadProgress.progress),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    );
+                                    return //giving err0r for video thats why this funtion is used
+                                        snapshot.data!.docs[index]['isVideo'] ==
+                                                true
+                                            ? CachedNetworkImage(
+                                                imageUrl: snapshot.data!.docs[0]
+                                                    ['postPicUrl'],
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                              )
+                                            : CachedNetworkImage(
+                                                imageUrl: snapshot.data!
+                                                    .docs[index]['postPicUrl'],
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                              );
                                     // Image.network(
                                     //     snapshot.data!.docs[index]['postPicUrl']);
                                   },
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2),
+                                          crossAxisCount: 3,
+                                          mainAxisSpacing: 4),
                                 );
                               } else {
                                 //if the process is not finished then show the indicator process

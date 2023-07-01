@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,14 +32,27 @@ class addPostCard extends StatelessWidget {
                 url == null
                     ? const SizedBox
                         .shrink() // If it's missing, display an empty box
-                    : CircleAvatar(
-                        radius: 22, backgroundImage: NetworkImage(url)),
+                    : ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: url,
+                          width: 44,
+                          height: 44,
+                          placeholder: (context, url) => const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
                 const SizedBox(
                   width: 8,
                 ),
                 Text(
                   "what's on your mind, ${user?.username}? ",
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
